@@ -222,7 +222,7 @@ none.
 %
 %  node(ResultingEnvAfterAction,Parent,ActionToApplyOnParentEnv,Depth,PathCost)
 %
-cost(move,1).
+cost(move,2).
 cost(take,1).
 cost(drop,1).
 cost(attack,1).
@@ -262,31 +262,19 @@ expand(Node,Successors) :-
            action(Action,OriginalEnv,OriginalPathCost,ResultEnv,PathCost),
            Successors).
 
-        %precedes(A,B):-
-        %   write('defproc'),write(A),nl,write(B),nl,nl.
+where_is_block(Id,PosX,PosY,Env) :-
+   query(player(_,_,PosX,PosY,Id),Env).
 
-%Priority queue function to know how to add stuff in the queue
-precedes(node(Env1,_,Action1,_,PathCost1),node(Env2,_,Action2,_,PathCost2)) :-
-   closestBlockDistance(Env1,H1), 
-   closestBlockDistance(Env2,H2),
-   F1 is PathCost1 + H1, F2 is PathCost2 + H2,
-   F1 < F2.
-   %   write('A1:'),write(Action1), write(' f:'), write(F1), 
-   %   write('A2:'),write(Action2), write(' f:'), write(F2), nl.
-
-
+where_is_block(Id,PosX,PosY,Env) :-
+   query(block(Id,PosX,PosY),Env).
 %Find the nearest block of our player %%A optimiser
 closestBlockDistance(Env,Distance) :-
-   %   findall(block(Id,PosX,PosY),blockInEnv(block(Id,PosX,PosY),Env),Blocks),
-   %   \+empty_set(Blocks),
    nom(Nom),
    query(player(_,Nom,PPosX,PPosY,_),Env),
    Player = player(_,Nom,PPosX,PPosY,_),
-   query(block(1,Bx,By),Env),
+   where_is_block(1,Bx,By,Env),
    Block = block(1,Bx,By),
    distance(Player,Block,Distance).
-   %distance_pqueue(Player,Blocks,Distance_Pqueue),
-   %dequeue(distance(_,_,Distance),Distance_Pqueue,_).
 
 blockInEnv(Block,Env) :-
    query(Block,Env).
@@ -298,37 +286,36 @@ distance(Player,Block,Distance) :-
    Dx is abs(PlayerPosX - BlockPosX),
    Dy is abs(PlayerPosY - BlockPosY),
    max(Dx,Dy,Distance).
-%
-%%Create a priority queue with the distance
-%distance_pqueue(_,[],[]).
-%distance_pqueue(Player,[Block|Blocks],PQueue) :-
-%distance(Player,Block,Distance),
-%   distance_pqueue(Player,Blocks,TmpPQueue),
-%   insert_pq(distance(Player,Block,Distance),TmpPQueue,PQueue).
-%
-%%Use for a priority queue to order the distance
-%precedes(distance(_,_,Distance1),distance(_,_,Distance2)) :-
-%   Distance1 < Distance2.
 
 min(X,Y,X) :- X =< Y,!.
 min(X,Y,Y) :- Y =< X,!.
 max(X,Y,X) :- Y =< X,!.
 max(X,Y,Y) :- X =< Y,!.
 
+%Priority queue function to know how to add stuff in the queue
+precedes(node(Env1,_,Action1,_,PathCost1),node(Env2,_,Action2,_,PathCost2)) :-
+   closestBlockDistance(Env1,H1), 
+   closestBlockDistance(Env2,H2),
+   F1 is PathCost1 + H1, F2 is PathCost2 + H2,
+   F1 < F2.
+
+
 %Add a node to the closed set
 add_to_closed(node(State,_,_,_,_),Closed,NewClosed):-
     add_in_set(State,Closed,NewClosed).
 %Add a successor to the fringe
 add_to_fringe(Successors, Fringe, NewFringe) :-
-    list_valid_moves(Successors),nl,
-    insert_list_pq(Successors,Fringe,NewFringe).
+    write('s '), list_valid_moves(Successors),nl,
+    insert_list_pq(Successors,Fringe,NewFringe),
+    write('f '),list_valid_moves(Fringe),nl,
+    write('nf '),list_valid_moves(NewFringe),nl,nl.
 %Delete a successor from the fringe
 delete_from_fringe(Element, Fringe, NewFringe) :-
     dequeue(Element, Fringe, NewFringe),
     write(Element),nl.
 
 has_block(player(_,_,_,_,Block)) :-
-   \+Block = 0.
+   Block = 1.
 
 %Predicat to verify if the goal is achieved
 at_goal(node(EnvToValidate,_,_,_,_),_) :-
