@@ -83,8 +83,8 @@ test_priority_queue :-
    N2=node([player(1, brutus, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
             node([block(1, 0, 2), player(1, brutus, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
             move(2), 1, 1),
-   insert_pq(N1,[],R),
-   [N1] = R. 
+   insert_pq(N1,[N2],R),
+   [N1,N2] = R. 
 
 
 test_precedes :-
@@ -93,7 +93,7 @@ test_precedes :-
    precedes(N1,N2).
 
 test_env(Env) :-
-    R=[1,4,3,3,[[1,brutus,0,0,4]],[[1,0,2],[2,0,1],[3,1,1]]],
+    R=[1,2,4,4,[[1,brutus,1,0,0]],[[1,0,3],[3,3,3]]],
     build_env(R,Env).
 
 list_valid_moves([]).

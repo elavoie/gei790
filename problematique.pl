@@ -267,24 +267,36 @@ where_is_block(Id,PosX,PosY,Env) :-
 
 where_is_block(Id,PosX,PosY,Env) :-
    query(block(Id,PosX,PosY),Env).
+
 %Find the nearest block of our player %%A optimiser
 closestBlockDistance(Env,Distance) :-
+   findall(Block,blockInEnv(Block,Env),Blocks),
    nom(Nom),
    query(player(_,Nom,PPosX,PPosY,_),Env),
-   Player = player(_,Nom,PPosX,PPosY,_),
-   where_is_block(1,Bx,By,Env),
-   Block = block(1,Bx,By),
-   distance(Player,Block,Distance).
+   query(nbColonnes(NbColonnes),Env),
+   query(nbRangees(NbRangees),Env),
+   max(NbColonnes,NbRangees,MaxDistance),
+   distance_min(Blocks,PPosX,PPosY,MaxDistance,Distance).
 
-blockInEnv(Block,Env) :-
-   query(Block,Env).
+blockInEnv(block(Id,PosX,PosY),Env) :- query(block(Id,PosX,PosY),Env).
+blockInEnv(block(Id,PosX,PosY),Env) :- 
+   query(player(_,_,PosX,PosY,Id),Env),
+   \+Id = 0.
+
+distance_min([],_,_,Min,Min).
+distance_min([block(_,BlockX,BlockY)|T],PlayerX,PlayerY,Min,R) :-
+   distance(PlayerX,PlayerY,BlockX,BlockY,Distance),
+   Distance < Min,
+   distance_min(T,PlayerX,PlayerY,Distance,R).
+distance_min([block(_,BlockX,BlockY)|T],PlayerX,PlayerY,Min,R) :-
+   distance(PlayerX,PlayerY,BlockX,BlockY,Distance),
+   Distance >= Min,
+   distance_min(T,PlayerX,PlayerY,Min,R).
 
 %Calculate the distance between a player and a block
-distance(Player,Block,Distance) :-
-   player(_,_,PlayerPosX,PlayerPosY,_) = Player,
-   block(_,BlockPosX,BlockPosY) = Block,
-   Dx is abs(PlayerPosX - BlockPosX),
-   Dy is abs(PlayerPosY - BlockPosY),
+distance(X1,Y1,X2,Y2,Distance) :-
+   Dx is abs(X1 - X2),
+   Dy is abs(Y1 - Y2),
    max(Dx,Dy,Distance).
 
 min(X,Y,X) :- X =< Y,!.
@@ -292,12 +304,19 @@ min(X,Y,Y) :- Y =< X,!.
 max(X,Y,X) :- Y =< X,!.
 max(X,Y,Y) :- X =< Y,!.
 
+%Heurisitc 
 %Priority queue function to know how to add stuff in the queue
-precedes(node(Env1,_,Action1,_,PathCost1),node(Env2,_,Action2,_,PathCost2)) :-
+precedes(node(Env1,_,_,_,PathCost1),node(Env2,_,_,_,PathCost2)) :-
    closestBlockDistance(Env1,H1), 
    closestBlockDistance(Env2,H2),
    F1 is PathCost1 + H1, F2 is PathCost2 + H2,
    F1 < F2.
+
+%Predicat to verify if the goal is achieved
+at_goal(node(EnvToValidate,_,_,_,_),_) :-
+   nom(Nom),
+   query(player(_,Nom,_,_,Block),EnvToValidate),
+   has_block(player(_,_,_,_,Block)).
 
 
 %Add a node to the closed set
@@ -315,13 +334,7 @@ delete_from_fringe(Element, Fringe, NewFringe) :-
     write(Element),nl.
 
 has_block(player(_,_,_,_,Block)) :-
-   Block = 1.
-
-%Predicat to verify if the goal is achieved
-at_goal(node(EnvToValidate,_,_,_,_),_) :-
-   nom(Nom),
-   query(player(_,Nom,_,_,Block),EnvToValidate),
-   has_block(player(_,_,_,_,Block)).
+   \+Block = 0.
 
 %Comparing the set of state no mather the order of what's in the state
 is_closed(node(State,_,_,_,_),Closed):-
