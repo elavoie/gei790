@@ -63,3 +63,6 @@ test_attack_exchange :-
 test_env(Env) :-
     R=[1,2,2,2,[[1,brutus,0,0,1]],[[2,0,1]]],
     build_env(R,Env).
+
+list_valid_moves([]).
+list_valid_moves([node(_,_,Action,_,_)|T]) :- print(Action), list_valid_moves(T).

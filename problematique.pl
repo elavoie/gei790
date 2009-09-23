@@ -211,5 +211,48 @@ attack(D, Env,R) :-
 
 none.
 
+%Prototype of a node
+%
+%  node(ResultingEnvAfterAction,Parent,ActionToApplyOnParentEnv,Depth,PathCost)
+%
+cost(move,1).
+cost(take,1).
+cost(drop,1).
+cost(attack,1).
+cost(none,1).
+
+action(move(A),Env,PreviousCost,ResultEnv,Cost) :-
+   cost(move,TmpCost),
+   Cost is PreviousCost + TmpCost,
+   move(A,Env,ResultEnv).
+
+action(take(A),Env,PreviousCost,ResultEnv,Cost) :-
+   cost(take,TmpCost),
+   Cost is PreviousCost + TmpCost,
+   take(A,Env,ResultEnv).
+
+action(drop(A),Env,PreviousCost,ResultEnv,Cost) :-
+   cost(drop,TmpCost),
+   Cost is PreviousCost + TmpCost,
+   drop(A,Env,ResultEnv).
+
+action(attack(A),Env,PreviousCost,ResultEnv,Cost) :-
+   cost(attack,TmpCost),
+   Cost is PreviousCost + TmpCost,
+   attack(A,Env,ResultEnv).
+
+action(none,Env,PreviousCost,Env,Cost) :-
+    cost(none,TmpCost),
+    Cost is PreviousCost + TmpCost.
+
+%Expand one node (Find all following actions)
+expand(Node,Successors) :-
+   node(OriginalEnv,_,_,OriginalDepth,OriginalPathCost)=Node,
+   Depth is OriginalDepth+1,
+   findall(node(ResultEnv,Node,Action,Depth,PathCost),
+           action(Action,OriginalEnv,OriginalPathCost,ResultEnv,PathCost),
+           Successors).
+
+
 
 %/* vim: set filetype=prolog : */
