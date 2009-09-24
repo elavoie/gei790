@@ -1,4 +1,3 @@
-:- ensure_loaded(roumanie).
 :- ensure_loaded(set).
 :- ensure_loaded(queue).
 :- ensure_loaded(stack).
