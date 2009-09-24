@@ -776,8 +776,7 @@ test_planif :-
     build_env(L,Env),
     find(Env,Plan),
     build_path(Plan,[],R),
-    [move(2), take(5)] = R.
-
+    write(R).
 %------------------------------------------------------------------------------
 % VÉRIFICATION D'UN MOUVEMENT
 %------------------------------------------------------------------------------
@@ -851,7 +850,7 @@ test_priority_queue :-
              node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
              move(1), 1, 1),
     N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(1, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
+             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
              move(2), 1, 1),
     insert_pq(N1,[N2],R),
     [N1,N2] = R. 
