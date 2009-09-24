@@ -16,7 +16,7 @@
 %-----------------------------------------------------------------------------
 
 % Nom du JI: p00_nom(-Nom)
-p00_nom('LaMa').
+p00_nom(Nom) :- nom(Nom).
 
 % Auteurs du JI: p00_auteurs(-Auteurs)
 p00_auteurs('Erick Lavoie et Alexandre Malo').
@@ -32,7 +32,8 @@ p00_plan(Plan) :-
 
 % Prochaine action du JI: p00_action(+Etat, -Action)
 p00_action(Etat, Action) :-
-    trouveAction(Etat, Action).
+    build_env(Etat,EtatIntelligent),
+    trouveAction(EtatIntelligent, Action).
 
 %-----------------------------------------------------------------------------
 % Prédicats internes de plans.
@@ -128,9 +129,7 @@ query(Q,[Q|_]) :- !.
 query(Q,[_|T]) :-
    query(Q,T).
 
-nom('brutus').
-
-x_nom(Nom) :- nom(Nom).
+nom('LaMa').
 
 % Check that a block doesn't have a player or a block on it
 empty(PosX,PosY,Env) :-
