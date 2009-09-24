@@ -400,7 +400,7 @@ add_to_closed(node(State,_,_,_,_),Closed,NewClosed):-
 % FONCTION D'AJOUT D'UNE LISTE DE NOEUDS A VISITER DANS UNE LISTE À PRIORITÉ
 %-----------------------------------------------------------------------------
 add_to_fringe(Successors, Fringe, NewFringe) :-
-    insert_list_pq(Successors,Fringe,NewFringe).
+    add_list_to_queue(Successors,Fringe,NewFringe).
 
 %-----------------------------------------------------------------------------
 % FONCTION QUI ENLEVE L'ÉLÉMENT LE PLUS PRIORITAIRE DE LA LISTE À PRIORITÉ
@@ -763,8 +763,6 @@ test_all:-
     test_drop_a_block,
     test_attack,
     test_attack_exchange,
-    test_priority_queue,
-    test_precedes,
     test_env.
 
 %------------------------------------------------------------------------------
@@ -776,8 +774,7 @@ test_planif :-
     build_env(L,Env),
     find(Env,Plan),
     build_path(Plan,[],R),
-    [move(2), take(5)] = R.
-
+    write(R).
 %------------------------------------------------------------------------------
 % VÉRIFICATION D'UN MOUVEMENT
 %------------------------------------------------------------------------------
@@ -842,32 +839,7 @@ test_attack_exchange :-
     build_env(R,EnvR),
     attack(1,Env,AttackR),
     equal_set(EnvR,AttackR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE L'INSERTION D'UN NOEUD DANS LA LISTE DE PRIORITÉ POUR A*
-%------------------------------------------------------------------------------
-test_priority_queue :-
-    nom(Nom), 
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(1, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
-    insert_pq(N1,[N2],R),
-    [N1,N2] = R. 
 
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE LA COMPARAISON ENTRE DEUX NOEUDS
-%------------------------------------------------------------------------------
-test_precedes :-
-    nom(Nom),
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
-    precedes(N1,N2).
 %------------------------------------------------------------------------------
 % VÉRIFICATION DE L'ENVIRONEMENT
 %------------------------------------------------------------------------------

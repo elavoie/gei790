@@ -312,7 +312,7 @@ none.
 cost(move,2).
 cost(take,1).
 cost(drop,1).
-cost(attack,1).
+cost(attack,3).
 cost(none,10).
 
 action(move(A),Env,PreviousCost,ResultEnv,Cost) :-
@@ -454,11 +454,9 @@ max(X,Y,Y) :- X =< Y,!.
 
 %Heurisitc 
 %Priority queue function to know how to add stuff in the queue
-precedes(node(Env1,_,_,_,PathCost1),node(Env2,_,_,_,PathCost2)) :-
-   closestBlockDistance(Env1,H1), 
-   closestBlockDistance(Env2,H2),
-   F1 is PathCost1 + H1, F2 is PathCost2 + H2,
-   F1 < F2.
+precedes(node(_,_,_,_,PathCost1),node(_,_,_,_,PathCost2)) :-
+   PathCost1 < PathCost2.
+
 has_block(player(_,_,_,_,Block)) :-
    \+Block = 0.
 
@@ -776,8 +774,7 @@ test_planif :-
     build_env(L,Env),
     find(Env,Plan),
     build_path(Plan,[],R),
-    [move(2), take(5)] = R.
-
+    write(R).
 %------------------------------------------------------------------------------
 % VÉRIFICATION D'UN MOUVEMENT
 %------------------------------------------------------------------------------
@@ -847,12 +844,12 @@ test_attack_exchange :-
 %------------------------------------------------------------------------------
 test_priority_queue :-
     nom(Nom), 
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
+    N1=node([player(_, Nom, 0, 1, 0),player(_,_,1,1,2), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(2), nbJoueurs(2)],
+             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), player(_,_,1,1,2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
              move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(1, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
+    N2=node([player(_, Nom, 1, 0, 2),player(_,_,1,1,0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(2), nbJoueurs(2)],
+             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), player(_,_,1,1,2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
+             attack(1), 1, 4),
     insert_pq(N1,[N2],R),
     [N1,N2] = R. 
 
@@ -861,12 +858,13 @@ test_priority_queue :-
 %------------------------------------------------------------------------------
 test_precedes :-
     nom(Nom),
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
+    N1=node([player(_, Nom, 0, 1, 0),player(_,_,1,1,2), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(2), nbJoueurs(2)],
+             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), player(_,_,1,1,2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
              move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
+    N2=node([player(_, Nom, 1, 0, 2),player(_,_,1,1,0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(2), nbJoueurs(2)],
+             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), player(_,_,1,1,2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
+             attack(1), 1, 4),
+
     precedes(N1,N2).
 %------------------------------------------------------------------------------
 % VÉRIFICATION DE L'ENVIRONEMENT
