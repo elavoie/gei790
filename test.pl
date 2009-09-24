@@ -13,17 +13,6 @@
 %    L=[2,2,2,2,[[1,brutus,0,0,2],[2,zouf,0,1,1]],[]],
 %    build_env(L, Env),
 %    attack(1, Env).
-
-test_atgoal :-
-    L=[1,1,2,2,[[1,brutus,0,0,1]],[]],
-    build_env(L,Env),
-    at_goal(Env,_).
-
-test_notatgoal :-
-    L=[1,1,2,2,[[1,brutus,0,0,0]],[]],
-    build_env(L,Env),
-    \+at_goal(Env,_).
-
 test_planif :-
     L=[1,1,2,2,[[1,brutus,0,0,0]],[[1,0,1]]],
     build_env(L,Env),
