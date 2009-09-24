@@ -1,4 +1,7 @@
 :- ensure_loaded(set).
+:- ensure_loaded(queue).
+:- ensure_loaded(graphsearch).
+:- ensure_loaded(test).
 
 %Ajoute la liste des blocks dans le set de l'environnement
 build_blocks_list([],Set,Set).
@@ -25,20 +28,24 @@ build_env([NbJoueurs,NbBlocks, NbColonnes,NbRangees,EtatJoueurs,EtatBlocksLibres
 % block(ID,PosX,PosY).
 % player(ID,Nom,PosX,PosY,IDBlock)
 
+query(Q,[Q|_]) :- !.
+query(Q,[_|T]) :-
+   query(Q,T).
+
 nom('brutus').
 
 x_nom(Nom) :- nom(Nom).
 
 % Check that a block doesn't have a player or a block on it
 empty(PosX,PosY,Env) :-
-    \+ member_set(block(_,PosX,PosY),Env),
-    \+ member_set(player(_,_,PosX,PosY,_),Env).
+    \+ query(block(_,PosX,PosY),Env),
+    \+ query(player(_,_,PosX,PosY,_),Env).
 
 % Check that position is valid in an environment
 exist(PosX, PosY, Env) :-
     PosX >= 0, PosY >= 0,
-    member_set(nbColonnes(NbColonnes), Env),
-    member_set(nbRangees(NbRangees), Env),
+    query(nbColonnes(NbColonnes), Env),
+    query(nbRangees(NbRangees), Env),
     PosX < NbColonnes,
     PosY < NbRangees.
 
@@ -61,7 +68,7 @@ direction(PosX, PosY, NewX, NewY, 8) :- NewX is PosX - 1, NewY is PosY + 1.
 % that test the validity on this environment
 move(D, Env) :-
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
     empty(NewX,NewY,Env).
@@ -69,27 +76,27 @@ move(D, Env) :-
 % Case where the player has no block on him
 take(D, Env) :-
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,0),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    member_set(block(_,NewX,NewY),Env),
-    \+ member_set(player(_,_,NewX,NewY,_),Env).
+    query(block(_,NewX,NewY),Env),
+    \+ query(player(_,_,NewX,NewY,_),Env).
 
 % Case where the player already has block on him
 take(D, Env) :-
     nom(Nom),
-    \+ member_set(player(_,Nom,PosX,PosY,0),Env),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    \+ query(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    member_set(block(_,NewX,NewY),Env),
-    \+ member_set(player(_,_,NewX,NewY,_),Env).
+    query(block(_,NewX,NewY),Env),
+    \+ query(player(_,_,NewX,NewY,_),Env).
 
 % Drop the block at the free cell
 drop(D, Env) :-
     nom(Nom),
-    \+ member_set(player(_,Nom,PosX,PosY,0),Env),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    \+ query(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
     empty(NewX,NewY,Env).
@@ -97,23 +104,23 @@ drop(D, Env) :-
 % Try to steal the block from another player
 attack(D, Env) :-
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,0),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    \+ member_set(player(_,_,NewX,NewY,0),Env),
-    member_set(player(_,_,NewX,NewY,_),Env),
-    \+ member_set(block(_,NewX,NewY),Env).
+    \+ query(player(_,_,NewX,NewY,0),Env),
+    query(player(_,_,NewX,NewY,_),Env),
+    \+ query(block(_,NewX,NewY),Env).
 
 % Try to exchange your block with the one from another player
 attack(D, Env) :-
     nom(Nom),
-    \+ member_set(player(_,Nom,PosX,PosY,0),Env),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    \+ query(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    \+ member_set(player(_,_,NewX,NewY,0),Env),
-    member_set(player(_,_,NewX,NewY,_),Env),
-    \+ member_set(block(_,NewX,NewY),Env).
+    \+ query(player(_,_,NewX,NewY,0),Env),
+    query(player(_,_,NewX,NewY,_),Env),
+    \+ query(block(_,NewX,NewY),Env).
 
 %% Actions that modifies the environment %%
 % We add the Post condition even if for performance reason
@@ -123,7 +130,7 @@ attack(D, Env) :-
 move(D, Env,R) :-
     % Pre
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
     empty(NewX,NewY,Env),
@@ -131,51 +138,51 @@ move(D, Env,R) :-
     delete_in_set(player(ID,Nom,PosX,PosY,IDBlock),Env,E2),
     add_in_set(player(ID,Nom,NewX,NewY,IDBlock),E2,R),
     % Post 
-    member_set(player(ID,Nom,NewX,NewY,IDBlock),R).
+    query(player(ID,Nom,NewX,NewY,IDBlock),R).
 
 % Case where the player has no block on him
 take(D, Env,R) :-
     % Pre
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,0),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    member_set(block(_,NewX,NewY),Env),
-    \+ member_set(player(_,_,NewX,NewY,_),Env),
+    query(block(_,NewX,NewY),Env),
+    \+ query(player(_,_,NewX,NewY,_),Env),
     % Take
     delete_in_set(block(BID,NewX,NewY),Env,E2),
     delete_in_set(player(PID,Nom,PosX,PosY,0),E2,E3),
     add_in_set(player(PID,Nom,PosX,PosY,BID),E3,R),  
     % Post
-    member_set(player(PID,Nom,PosX,PosY,BID),R),
-    \+ member_set(block(BID,NewX,NewY),R).
+    query(player(PID,Nom,PosX,PosY,BID),R),
+    \+ query(block(BID,NewX,NewY),R).
 
 
 % Case where the player already has block on him
 take(D, Env,R) :-
     % Pre
     nom(Nom),
-    \+ member_set(player(_,Nom,PosX,PosY,0),Env),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    \+ query(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    member_set(block(_,NewX,NewY),Env),
-    \+ member_set(player(_,_,NewX,NewY,_),Env),
+    query(block(_,NewX,NewY),Env),
+    \+ query(player(_,_,NewX,NewY,_),Env),
     % Take
     delete_in_set(block(BID,NewX,NewY),Env,E2),
     delete_in_set(player(PID,Nom,PosX,PosY,PBID),E2,E3),
     add_in_set(block(PBID,NewX,NewY),E3,E4),
     add_in_set(player(PID,Nom,PosX,PosY,BID),E4,R),  
     % Post
-    member_set(player(PID,Nom,PosX,PosY,BID),R),
-    member_set(block(PBID,NewX,NewY),R).
+    query(player(PID,Nom,PosX,PosY,BID),R),
+    query(block(PBID,NewX,NewY),R).
 
 % Drop the block at the free cell
 drop(D, Env,R) :-
     % Pre
     nom(Nom),
-    \+ member_set(player(_,Nom,PosX,PosY,0),Env),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    \+ query(player(_,Nom,PosX,PosY,0),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
     empty(NewX,NewY,Env),
@@ -184,8 +191,8 @@ drop(D, Env,R) :-
     add_in_set(block(PBID,NewX,NewY),E2,E3),
     add_in_set(player(PID,Nom,PosX,PosY,0),E3,R),  
     % Post
-    member_set(player(PID,Nom,PosX,PosY,0),R),
-    member_set(block(PBID,NewX,NewY),R).
+    query(player(PID,Nom,PosX,PosY,0),R),
+    query(block(PBID,NewX,NewY),R).
 
 
 % Whether we have a block or not, the other player
@@ -194,20 +201,20 @@ drop(D, Env,R) :-
 attack(D, Env,R) :-
     % Pre
     nom(Nom),
-    member_set(player(_,Nom,PosX,PosY,_),Env),
+    query(player(_,Nom,PosX,PosY,_),Env),
     direction(PosX,PosY,NewX,NewY,D),
     exist(NewX,NewY,Env),
-    \+ member_set(player(_,_,NewX,NewY,0),Env),
-    member_set(player(_,_,NewX,NewY,_),Env),
-    \+ member_set(block(_,NewX,NewY),Env),
+    \+ query(player(_,_,NewX,NewY,0),Env),
+    query(player(_,_,NewX,NewY,_),Env),
+    \+ query(block(_,NewX,NewY),Env),
     % Attack
     delete_in_set(player(Us,OurName,PosX,PosY,OurBlock),Env,E2),
     delete_in_set(player(Them,TheirName,NewX,NewY,TheirBlock),E2,E3),
     add_in_set(player(Us,OurName,PosX,PosY,TheirBlock),E3,E4),
     add_in_set(player(Them,TheirName,NewX,NewY,OurBlock),E4,R), 
     % Post
-    member_set(player(Us,OurName,PosX,PosY,TheirBlock),R),
-    member_set(player(Them,TheirName,NewX,NewY,OurBlock),R).
+    query(player(Us,OurName,PosX,PosY,TheirBlock),R),
+    query(player(Them,TheirName,NewX,NewY,OurBlock),R).
 
 none.
 
@@ -215,11 +222,11 @@ none.
 %
 %  node(ResultingEnvAfterAction,Parent,ActionToApplyOnParentEnv,Depth,PathCost)
 %
-cost(move,1).
+cost(move,2).
 cost(take,1).
 cost(drop,1).
 cost(attack,1).
-cost(none,1).
+cost(none,10).
 
 action(move(A),Env,PreviousCost,ResultEnv,Cost) :-
    cost(move,TmpCost),
@@ -245,6 +252,8 @@ action(none,Env,PreviousCost,Env,Cost) :-
     cost(none,TmpCost),
     Cost is PreviousCost + TmpCost.
 
+%Search specific functions
+
 %Expand one node (Find all following actions)
 expand(Node,Successors) :-
    node(OriginalEnv,_,_,OriginalDepth,OriginalPathCost)=Node,
@@ -252,6 +261,102 @@ expand(Node,Successors) :-
    findall(node(ResultEnv,Node,Action,Depth,PathCost),
            action(Action,OriginalEnv,OriginalPathCost,ResultEnv,PathCost),
            Successors).
+
+where_is_block(Id,PosX,PosY,Env) :-
+   query(player(_,_,PosX,PosY,Id),Env).
+
+where_is_block(Id,PosX,PosY,Env) :-
+   query(block(Id,PosX,PosY),Env).
+
+%Find the nearest block of our player %%A optimiser
+closestBlockDistance(Env,Distance) :-
+   findall(Block,blockInEnv(Block,Env),Blocks),
+   nom(Nom),
+   query(player(_,Nom,PPosX,PPosY,_),Env),
+   query(nbColonnes(NbColonnes),Env),
+   query(nbRangees(NbRangees),Env),
+   max(NbColonnes,NbRangees,MaxDistance),
+   distance_min(Blocks,PPosX,PPosY,MaxDistance,Distance).
+
+blockInEnv(block(Id,PosX,PosY),Env) :- query(block(Id,PosX,PosY),Env).
+blockInEnv(block(Id,PosX,PosY),Env) :- 
+   query(player(_,_,PosX,PosY,Id),Env),
+   \+Id = 0.
+
+distance_min([],_,_,Min,Min).
+distance_min([block(_,BlockX,BlockY)|T],PlayerX,PlayerY,Min,R) :-
+   distance(PlayerX,PlayerY,BlockX,BlockY,Distance),
+   Distance < Min,
+   distance_min(T,PlayerX,PlayerY,Distance,R).
+distance_min([block(_,BlockX,BlockY)|T],PlayerX,PlayerY,Min,R) :-
+   distance(PlayerX,PlayerY,BlockX,BlockY,Distance),
+   Distance >= Min,
+   distance_min(T,PlayerX,PlayerY,Min,R).
+
+%Calculate the distance between a player and a block
+distance(X1,Y1,X2,Y2,Distance) :-
+   Dx is abs(X1 - X2),
+   Dy is abs(Y1 - Y2),
+   max(Dx,Dy,Distance).
+
+min(X,Y,X) :- X =< Y,!.
+min(X,Y,Y) :- Y =< X,!.
+max(X,Y,X) :- Y =< X,!.
+max(X,Y,Y) :- X =< Y,!.
+
+%Heurisitc 
+%Priority queue function to know how to add stuff in the queue
+precedes(node(Env1,_,_,_,PathCost1),node(Env2,_,_,_,PathCost2)) :-
+   closestBlockDistance(Env1,H1), 
+   closestBlockDistance(Env2,H2),
+   F1 is PathCost1 + H1, F2 is PathCost2 + H2,
+   F1 < F2.
+
+%Predicat to verify if the goal is achieved
+at_goal(node(EnvToValidate,_,_,_,_),_) :-
+   nom(Nom),
+   query(player(_,Nom,_,_,Block),EnvToValidate),
+   has_block(player(_,_,_,_,Block)).
+
+
+%Add a node to the closed set
+add_to_closed(node(State,_,_,_,_),Closed,NewClosed):-
+    add_in_set(State,Closed,NewClosed).
+%Add a successor to the fringe
+add_to_fringe(Successors, Fringe, NewFringe) :-
+    write('s '), list_valid_moves(Successors),nl,
+    insert_list_pq(Successors,Fringe,NewFringe),
+    write('f '),list_valid_moves(Fringe),nl,
+    write('nf '),list_valid_moves(NewFringe),nl,nl.
+%Delete a successor from the fringe
+delete_from_fringe(Element, Fringe, NewFringe) :-
+    dequeue(Element, Fringe, NewFringe),
+    write(Element),nl.
+
+has_block(player(_,_,_,_,Block)) :-
+   \+Block = 0.
+
+%Comparing the set of state no mather the order of what's in the state
+is_closed(node(State,_,_,_,_),Closed):-
+   in_set(State,Closed).
+
+in_set(_,[]) :- \+true.
+in_set(State1,[State2|_]) :-
+   equal_set(State1,State2), !.
+in_set(State1,[State2|Closed]) :-
+   \+equal_set(State1,State2),
+   in_set(State1,Closed).
+   
+find(Start, Result) :-
+   graph_search([node(Start,nil,nil,0,0)],_,Result,[]).
+
+
+
+
+
+
+
+
 
 
 
