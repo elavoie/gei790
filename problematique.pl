@@ -1,7 +1,6 @@
 :- ensure_loaded(set).
 :- ensure_loaded(queue).
 :- ensure_loaded(graphsearch).
-:- ensure_loaded(test).
 
 %Ajoute la liste des blocks dans le set de l'environnement
 build_blocks_list([],Set,Set).
@@ -252,6 +251,21 @@ action(none,Env,PreviousCost,Env,Cost) :-
     cost(none,TmpCost),
     Cost is PreviousCost + TmpCost.
 
+% We add another action definition to simply validate the moves
+action(move(A),Env,ResultEnv):-
+   move(A,Env,ResultEnv).
+
+action(take(A),Env,ResultEnv) :-
+   take(A,Env,ResultEnv).
+
+action(drop(A),Env,ResultEnv) :-
+   drop(A,Env,ResultEnv).
+
+action(attack(A),Env,ResultEnv) :-
+   attack(A,Env,ResultEnv).
+
+action(none,Env,Env).
+
 %Search specific functions
 
 %Expand one node (Find all following actions)
@@ -324,14 +338,14 @@ add_to_closed(node(State,_,_,_,_),Closed,NewClosed):-
     add_in_set(State,Closed,NewClosed).
 %Add a successor to the fringe
 add_to_fringe(Successors, Fringe, NewFringe) :-
-    write('s '), list_valid_moves(Successors),nl,
-    insert_list_pq(Successors,Fringe,NewFringe),
-    write('f '),list_valid_moves(Fringe),nl,
-    write('nf '),list_valid_moves(NewFringe),nl,nl.
+    %write('s '), list_valid_moves(Successors),nl,
+    insert_list_pq(Successors,Fringe,NewFringe).
+    %write('f '),list_valid_moves(Fringe),nl,
+    %write('nf '),list_valid_moves(NewFringe),nl,nl.
 %Delete a successor from the fringe
 delete_from_fringe(Element, Fringe, NewFringe) :-
-    dequeue(Element, Fringe, NewFringe),
-    write(Element),nl.
+    dequeue(Element, Fringe, NewFringe).
+    %write(Element),nl.
 
 has_block(player(_,_,_,_,Block)) :-
    \+Block = 0.
@@ -350,11 +364,18 @@ in_set(State1,[State2|Closed]) :-
 find(Start, Result) :-
    graph_search([node(Start,nil,nil,0,0)],_,Result,[]).
 
+build_path(node(_,nil,nil,_,_),R,R).
+build_path(node(_,Parent,Action,_,_),PreviousR,R) :-
+   build_path(Parent,[Action|PreviousR],R).
 
+validate(Env, [], Env).
+validate(Env, [Action|T], R) :-
+   action(Action, Env,E2),
+   validate(E2,T,R).
 
-
-
-
+validate_plan(Env, Actions) :-
+   validate(Env, Actions, R),
+   at_goal(node(R,_,_,_,_),_). 
 
 
 

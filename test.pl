@@ -108,9 +108,6 @@ list_valid_moves([node(Env,_,Action,_,PathCost)|T]) :-
 list_successors([]).
 list_successors([node(State,_,Action,Depth,PathCost)|T]) :- write(State),write(' '),write(Action),write(' '),write(Depth),write(' '),write(PathCost),nl, list_successors(T).
 
-build_path(node(_,nil,nil,_,_),R,R).
-build_path(node(_,Parent,Action,_,_),PreviousR,R) :-
-   build_path(Parent,[Action|PreviousR],R).
 
 %/* vim: set filetype=prolog : */
 
