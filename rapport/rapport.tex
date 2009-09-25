@@ -176,12 +176,15 @@ Voici maintenant un graphique démontrant le temps d'exécution pour chacune des
 [5, 10, 75, 75, [[1,'Inconnu1',38,14,0], [2,'Inconnu2',45,39,0], [3,'Inconnu3',31,60,0], [4,Nom,10,16,0], [5,'Inconnu5',13,35,12]], [[1,5,0], [2,52,61], [3,3,48], [4,7,27], [5,23,17], [6,28,29], [7,55,21], [8,12,0], [9,64,48]]]
 \end{itemize}
 
-
 \begin{figure}[!h] %on ouvre l'environnement figure
 \includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
 \caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
 \end{figure}
 
+Avec ces résultats nous pouvons voir la performance, en temps, de chaque algorithme différent. Il ne faut pas comparer les résultats entres les environnements car ils n'ont en fait aucune lien ensemble. 
+
+Le plremier cas à réaliser est que la technique de profondeur d'abord est vraiment risqué. Cette technique a dépasser la mémoire maximale permise à l'environnement prolog. Cette technique est donc à éviter. Il semble que l'algorithme s'étant trop dans une branch dans l'environnement 3 et 4.
+Le deuxième cas à réaliser est que l'algorithme A* est toujours pire que toutes les autres algorithme. En théorie le A* devrait être rapide car il élimine 
 
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 
