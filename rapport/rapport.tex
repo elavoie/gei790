@@ -78,9 +78,36 @@ La planification partiellement ordonnée est une technique un peu plus sophistiq
 
 Cette technique permet une plus grande flexibilité dans l'exécution du plan puisqu'une contrainte inconnue au moment de l'élaboration du plan peut être gérée adéquatement en effectuant un choix parmi les actions possibles au moment de l'exécution.  De plus, l'élaboration du plan pourrait potentiellement être plus efficace si l'espace de recherche sur les actions est moindre que sur les environnement de jeu potentiels.
 
-Cependant, cette technique est plus difficile à appliquer dans le cas où les préconditions ou effets des actions sont représentées avec des variables.  De plus, 
+Cependant, cette technique est plus difficile à appliquer dans le cas où les préconditions ou effets des actions sont représentées avec des variables.  De plus, l'établissement d'heuristiques pour la planification partielle n'est pas un domaine complètement compris.
 
 \subsection{Techniques de recherche}
+Les techniques de recherche analysées se répartissent en deux grandes catégories, informées ou non-informées, selon qu'elles utilisent ou non un heuristique pour guider la recherche.  De plus, l'utilisation d'une liste fermée ou non détermine si on effectue un parcours d'arbre ou de graphe et peut influer de fa\c con significative sur l'utilisation mémoire.  Étant donné le temps de développement disponible pour la réalisation de cette analyse, seul les algorithmes de parcours de graphe ont été considérés.  De plus, en première analyse, nous n'avons pas tenté d'analyser la complexité des structures de données utilisées pour implémenter chacun des algorithmes mais seul la complexité de l'algorithme lui même a été étudiée.  Pour une analyse plus exhaustive, il faudrait en tenir compte.
+
+\subsubsection{Recherche non-informée}
+Les algorithmes de recherche non-informée font l'équivalent d'une recherche à l'aveugle au sens où l'algorithme ne possède aucun indicateur lui permettant de déterminer s'il se rapproche du but pendant la recherche.  Puisqu'il était très simple de tester différents algorithmes en changeant les structures de données utilisées, la recherche en largeur, la recherche en profondeur et la recherche par coût uniforme ont été testées.
+
+Dans les trois cas, en tenant compte de l'utilisation d'une liste fermée, les algorithmes sont complets, au sens où ils vont tous trouver une solution s'il en existe une. À noter que la recherche en profondeur d'abord n'est pas complète sans l'utilisation d'une liste fermée puisqu'elle peut se retrouver dans une branche de profondeur infinie.
+
+Cependant, seuls la recherche en largeur et la recherche en profondeur garantissent un résultat optimal, c'est-à-dire que la solution trouvée aura le moindre coût de toutes les solutions possibles. Cela au prix d'une utilisation mémoire beaucoup plus importante que pour la recherche en profondeur d'abord.
+
+Dans tous les cas, l'analyse en complexité permet de mettre en lumière que l'explosion combinatoire des états à explorer dans la recherche non-informée la rend impraticable dans le cas où l'espace de recherche est plus que modeste.  
+
+\subsubsection{Recherche informée}
+La recherche informée utilise quant à elle une mesure approximative de rapprochement du but. Pour cette analyse, l'étude s'est limitée à la comparaison des algorithmes de recherche non-informée avec les algorithmes avare et A*.
+
+Dans le cas de la recherche avare, seule la mesure de rapprochement du but à l'aide de l'heuristique est évaluée pour le choix du prochain noeud à explorer.  Cela a pour conséquence que la recherche avare est non-optimale et incomplète.
+
+Dans le cas de la recherche A*, le total du coût du parcours et de la valeur de l'heuristique sont pris en compte pour le choix du prochain noeud à explorer.  Cela est suffisant pour assurer la complétude et l'optimalité.
+
+Dans les deux cas, le choix de l'heuristique est primordial pour le bon fonctionnement des algorithmes.  Celle-ci ne doit jamais surestimer le coût d'une action.  Cela peut être très payant au bout du compte puisque qu'une section beaucoup plus restreinte de l'arbre de recherche doit être explorée.  En première analyse, cela rend les algorithmes de recherche beaucoup plus attrayant.  Encore une fois, il faut cependant tenir compte de la complexité des opérations sur les structures de données utilisées pour mesurer l'efficacité d'une implémentation ainsi que le coût de calcul de l'heuristique.  
+
+Finalement, le choix de la technique de recherche doit être réalisé en fonction des paramètre du problème, notamment la taille de l'espace de recherche, les contraintes d'utilisation mémoire et de temps processeur et l'importance d'avoir un plan optimal. 
+
+
+\subsection{Choix de la technique}
+
+Étant donné les éléments mentionnés plus haut, nous avons choisi d'utiliser la planification par recherche d'espace d'état pour la simplicité de l'implémentation et du choix de l'heuristique et à la lumière à la fois de l'analyse réalisée et des tests d'implémentation nous avons choisi la technique de recherche par % À compléter 
+pour l'implémentation de la planification.
 
 \section{Resultats de tests}
 % Alex et Erick
