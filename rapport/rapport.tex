@@ -54,7 +54,7 @@ Date: \today
 % Alex
 % 0.5 page
 Ce rapport présente les résultats de recherches pour l'amélioration de l'intelligence de joueur informatisés (\textit{JI}).
-Les \textit{JI} qui évoluent entouré de joueur humain font face à un problème critique. En fait, ils ne possèdent pas une intelligence suffisante afin de s'adapter aux multiples situations imprévisibles des humains. De plus, les \textit{JI} sont trop prévisible et rendent les jeux rapidement monotones. À ce jour, l'amélioration de \textit{JI} l'élément le plus crucial pour une évolution saine de la compagnie.
+Les \textit{JI} qui évoluent entourés de joueurs humains font face à un problème critique. En fait, ils ne possèdent pas une intelligence suffisante afin de s'adapter aux multiples situations imprévisibles des humains. De plus, les \textit{JI} sont trop prévisible et rendent les jeux rapidement monotones. À ce jour, l'amélioration de \textit{JI} est l'élément le plus crucial pour une évolution saine de la compagnie.
 
 Pour répondre à ce problème, l'ingénieur en chef a déterminé l'utilisation de méthodes d'intelligence artificielle. Les recherches effectuées comportent plusieurs volets afin de s'assurer de répondre aux besoins réels de la majorité de nos jeux à plateforme multijoueurs. Voici les études qui ont été réalisées:
 
@@ -127,8 +127,7 @@ Finalement, le choix de la technique de recherche doit être réalisé en foncti
 
 \subsection{Choix de la technique}
 
-Étant donné les éléments mentionnés plus haut, nous avons choisi d'utiliser la planification par recherche d'espace d'état pour la simplicité de l'implémentation et du choix de l'heuristique et à la lumière à la fois de l'analyse réalisée et des tests d'implémentation nous avons choisi la technique de recherche par % À compléter 
-pour l'implémentation de la planification.
+Étant donné les éléments mentionnés plus haut, nous avons choisi d'utiliser la planification par recherche d'espace d'état pour la simplicité de l'implémentation et du choix de l'heuristique et à la lumière à la fois de l'analyse réalisée et des tests d'implémentation nous avons choisi la technique de recherche avare pour l'implémentation de la planification.
 
 \section{Resultats de tests}
 % Alex et Erick
@@ -141,7 +140,7 @@ pour l'implémentation de la planification.
 
 % - Couvrir les algorithmes de recherche informee et non-informee
 
-Afin de sélectionner la bonne méthode de recherche, nous avons fixé deux critères. Le premier est le temps de calcul et le second est la qualité du plan. Il va de soit qu'il faut trouvé un compromis entre le temps et le compromis. Nous avons négligé la mémoire, car nous n'avons pas trouvé de moyen de calculer la consommation maximale de l'algorithme dans l'interpréteur prolog. Nous avons aussi négligé la complexité du développement, car chaque méthode est sensiblement identique. La seule implémentation qui varie est l'ajout et le retrait d'un noeud de la liste ouverte.
+Afin de sélectionner la bonne méthode de recherche, nous avons fixé deux critères. Le premier est le temps de calcul et le second est la qualité du plan. Il va de soit qu'il faut trouver un compromis entre le temps et la qualité. Nous avons négligé la mémoire, car nous n'avons pas trouvé de moyen de calculer la consommation maximale de l'algorithme dans l'interpréteur prolog. Nous avons aussi négligé la complexité du développement, car chaque méthode est sensiblement identique. La seule implémentation qui varie est l'ajout et le retrait d'un noeud de la liste ouverte.
 
 Pour ce qui est du classement par rapport à la qualité du plan, la théorie nous indique un ordre à deux niveaux. C'est-à-dire ceux qui sont optimaux et ceux qui ne le sont pas nécessairement.
 
@@ -184,11 +183,11 @@ Voici les résultats du temps d'exécution pour chacun des algorithmes effectué
 \caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
 \end{figure}
 
-Avec ces résultats nous pouvons voir l'évolution des algorithmes. Nous avons doublé la distance entre le joué et son but pour chaque environnement. Nous pouvons ainsi voir un estimé de la complexité de chacune des algorithmes.
+Avec ces résultats nous pouvons voir l'évolution des algorithmes. Nous avons doublé la distance entre le joueur et son but pour chaque environnement. Nous pouvons ainsi voir un estimé de la complexité de chacune des algorithmes.
 
 En première considération, la technique de profondeur d'abord est un algorithme vraiment risqué. Cette technique dépasse rapidement la mémoire maximale permise à l'environnement prolog. Cette technique est donc à éviter. Il semble que l'algorithme s'étant trop dans une branche dans l'environnement 2, 3 et 4.
 
-En second considération, la technique A* s'emballe plus le but s'éloigne. Nous pouvons voir que le A* effectue beaucoup plus de calcul que n'importe qu'elle autre solution. L'algorithme utilise une queue avec priorité tout comme la méthode Avare ainsi que la méthode à coût uniforme. Cependant, elle tient compte de plus de paramètres que ces derniers; elle tient compte de chacun des paramètres utilisés par ces derniers. Le fait d'utiliser deux éléments dans le coût total pour l'insertion dans la queue fait que beaucoup de changement de branche est effectué.
+En second considération, la technique A* s'emballe plus le but s'éloigne. Nous pouvons voir que le A* effectue beaucoup plus de calculs que n'importe quelle autre solution. L'algorithme utilise une queue avec priorité tout comme la méthode Avare ainsi que la méthode à coût uniforme. Cependant, elle tient compte de plus de paramètres que ces derniers; elle tient compte de chacun des paramètres utilisés par ces derniers. Le fait d'utiliser deux éléments dans le coût total pour l'insertion dans la queue fait que beaucoup de changement de branche est effectué.
 
 En troisième considération, lorsque le but est très loin, seul l'algorithme avare réussit à résoudre le problème.
 
@@ -302,6 +301,37 @@ Bien que la problématique présente deux cas distincts pour l'attaque, avec la 
 Finalement, l'action $None$ ne possède aucune précondition et n'a aucun effet sur l'environnement.
 
 \section{Description et une explication du vocabulaire des parties principales de la solution}
+À haut niveau, notre programme comporte 3 grandes sections:
+\begin{itemize}
+	\item Une représentation des actions, leur préconditions et leurs effets sur l'environnement
+	\item Un algorithme de recherche utilisant les actions, un environnement et un but pour déterminer une séquence d'actions permettant d'atteindre le but
+	\item Des prédicats de planification ajustant le comportement du joueur en fonction de l'état courant de l'environnement
+\end{itemize}
+
+La représentation des actions a été abordée à la section précédente.  Pour la recherche, voici les éléments les plus importants. 
+
+L'expansion des actions possibles est réalisée en trouvant chacune des actions pouvant s'appliquer sur l'environnement.  Ce test est réalisé à l'aide du prédicat Action.
+\begin{equation}
+	successors = { \forall action Action(action, env) } \Rightarrow Expand( node(env, action), successors)
+\end{equation}
+Un exemple du prédicat $Action$ pour l'action $move$:
+\begin{equation}
+        \forall direction, env Move(direction, env) \Rightarrow Action(Move(direction), env)
+\end{equation}
+
+La validation du but est réalisée en testant que le joueur possède effectivement un bloc, assumant que le $nom$ est le nom du joueur.  Le prédicat $Player(nom,positionX,positionY,block)$ détermine si un joueur ayant un $nom$ à la position $positionX$ et $positionY$ et un $block$ existe, l'environnement est ici implicite:
+\begin{eqnarray*}
+	\forall & positionX, positionY\ \exists block Player(nom,positionX,positionY, block) \\
+	 \wedge & block != 0 \Rightarrow ButAtteint(nom)
+\end{eqnarray*}
+
+La recherche peut etre résumée, en disant qu'il existe une solution telle que le plan $Plan$ généré par cette solution est valide, que l'état donné par le dernier noeud $node$ n'a pas été visité avant, qu'il s'agit du noeud minimisant le coût et que le but est atteint:
+\begin{eqnarray*}
+	\exists & solution\ Plan(solution) \wedge EtatNonVisite(fringe) \wedge MoindreCout(fringe,node) \\  \wedge &  ButAtteint \Rightarrow RechercheGraphe(fringe, solution, closedSet)
+\end{eqnarray*}
+
+Finalement, pour la planification, en autant que le plan soit toujours valide nous retournons la prochaine action, dans les autres cas un autre plan est établi.  Lorsque le but est atteint, l'action $none$ est retournée tant que le but est satisfait par l'environnement.
+
 
 \section{Description de parties principales de notre solution}
 % Alex
@@ -317,21 +347,21 @@ Voici les structures de données que nous avons utilisées dans notre implément
 
 Le \textbf{Node} est l'élément qui représente le graphe que l'algorithme de recherche parcours. L'\textbf{Action}, tel que présenté à la section de la représentation STRIPS des actions possible de \textit{BlockBlitz}, valide d'abord si le mouvement peut être effectué sur l'environnement. Nous avons cependant explicitement partagé un environnement au lieu d'utiliser la base de connaissance de l'interpréteur prolog. L'environnement est représenté par la variable \textit{Etat}. De plus, si l'action est effectivement valide, nous retournons l'environnement résultant ainsi que le nouveau coût qui est relié au parcours effectué.
 
-Avec notre représentation, nous avons pu effectuer l'expansion de nos noeuds lors du parcours de graphe de façon efficace. Dans le cas de \textit{BlockBlitz}, l'expansion signifie de trouvé la prochaine action à effectuer. Nous avons donc utilisé la fonction \textit{findall} avec comme objectif le prédicat avec seulement l'état et le cout comme variable assigné. Cela nous donne alors la liste des noeuds successeurs avec leur nouvel environnement déjà construit ainsi que le cout de l'action. C'est la fonction \textit{findall} qui, avec l'inférence et le fait de trouver une action valide, retourne le nouveau cout et l'environnement résultant et l'ajoute à la liste résultante.
+Avec notre représentation, nous avons pu effectuer l'expansion de nos noeuds lors du parcours de graphe de façon efficace. Dans le cas de \textit{BlockBlitz}, l'expansion signifie de trouver la prochaine action à effectuer. Nous avons donc utilisé la fonction \textit{findall} avec comme objectif le prédicat avec seulement l'état et le coût comme variable assignée. Cela nous donne alors la liste des noeuds successeurs avec leur nouvel environnement déjà construit ainsi que le cout de l'action. C'est la fonction \textit{findall} qui, avec l'inférence et le fait de trouver une action valide, retourne le nouveau cout et l'environnement résultant et l'ajoute à la liste résultante.
 
 
-\section{Recommandation de la pertinence des méthodes d'algorithme évolué}
+\section{Recommandation de la pertinence des méthodes d'algorithmes évolués}
 % Alex
 % 1 page
 
 % Planification continuelle, multiagent, conditionnelle
 Dans le cadre de notre analyse, nous avons également survolé des techniques de planification plus évoluées, c'est-à-dire des techniques pour lesquelles les hypothèses sur l'environnement de jeu sont moins restrictives.  La recherche classique tel qu'envisagé précédemment assume que l'environnement est pleinement observable, statique et déterministe et que les actions affectant l'environnement sont correctes et complètes. Ces hypothèses permettent de réaliser la planification beaucoup plus simplement.
-Dans le cas du jeu \textit{BlockBlitz}, pour que l'IA se comporte de fa\c con optimale, ces hypothèses sont trop restrictives puisque nous n'avons pas affaire à un environnement statique et nous sommes en présence d'autres agents compétiteurs.  Il est donc pertinent d'évaluer les techniques de planification plus avancées.  Les caractéristiques de chacune de ces techniques sont brièvement abordées ci-après ainsi que leur applicabilité au jeu \textit{BlockBlitz}.
+Dans le cas du jeu \textit{BlockBlitz}, pour que l'IA se comporte de fa\c con optimale, ces hypothèses sont trop restrictives puisque nous n'avons pas affaire à un environnement statique, non-déterministe lors d'attaques et nous sommes en présence d'autres agents compétiteurs.  Il est donc pertinent d'évaluer les techniques de planification plus avancées.  Les caractéristiques de chacune de ces techniques sont brièvement abordées ci-après ainsi que leur applicabilité au jeu \textit{BlockBlitz}.
 
 \subsection{Planification conditionnelle}
-La planification conditionnelle tente de gérer l'incertitude liée à un environnement non déterministe en vérifiant à différents points du plan que certaines conditions sont vraies et tente d'apporter un plan de contingence pour les différents scénarios possibles.
+La planification conditionnelle tente de gérer l'incertitude liée à un environnement non déterministe en vérifiant à différents points du plan que certaines conditions sont vraies et tente d'apporter un plan de contingence pour les différents scénarios possibles de sorte que pour toutes les situations possibles le plan sera accompli.
 
-Dans notre cas, la planification conditionnelle n'est pas vraiment intéressante puisque l'environnement est déterministe.  Cette technique ne sera donc pas discutée davantage.
+Dans notre cas, la planification conditionnelle pourrait être intéressante puisque les actions d'attaque sont non-déterministes. Nous aurions alors pu créer un plan pour chaque possibilité d'attaque afin que le but soit atteint dans tous les cas.
 
 \subsection{Replanification et observation de l'exécution du plan}
 La replanification consiste à vérifier au fur et à mesure de l'exécution du plan que celui-ci est encore valide.  Cela peut être fait une action à la fois ou bien pour l'ensemble du plan à chaque étape.  Lorsque les conditions d'applicabilité du plan ne sont plus valides, il est alors possible d'en générer un nouveau. Cela est très approprié dans le cas d'un environnement dynamique.
