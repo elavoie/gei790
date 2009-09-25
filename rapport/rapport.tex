@@ -57,6 +57,18 @@ Date: \today
 \section{Recommandation et justification de la technique de planification}
 % Erick
 % 3 pages
+L'analyse des différentes techniques de planification a permis de faire ressortir les éléments suivants.  Cependant, étant donné que le choix de la technique de planification est indépendant du choix de la technique de recherche qui l'implémente, ces deux sujets seront traités séparément.
+
+\subsection{Techniques de planification}
+Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'atteindre un but. Dans le cas de la planification de la recherche par espace d'état, la recherche s'effectue sur l'état de l'environnement de jeu alors que dans le cas de la planification partiellement ordonnée, la recherche s'effectue sur l'environnement d'actions, c'est-à-dire les actions et leur dépendances mutuelles. 
+
+\subsubsection{Planification par recherche d'espace d'état}
+
+
+
+\subsubsection{Planification partiellement ordonnée}
+
+\subsection{Techniques de recherche}
 
 \section{Resultats de tests}
 % Alex et Erick
@@ -93,7 +105,7 @@ Il est nécessaire de traduire la direction en coordonnées. Pour ce faire, le p
 
 Les deux derniers prédicats sont les suivants.  $Empty(posx,posy)$ assure que la case visée ne contient rien, c'est-à-dire aucun joueur ou bloc, et $Exist(posx,posy)$ valide que la case visée appartient bel et bien à l'environnement, c'est-à-dire qu'elle est contenue dans ses limites.
 \begin{eqnarray*}
-	Empty(posx,posy) \Leftarrow & Block(\_,posx,posy)  \wedge Player(\_,\_,posx,posy,\_) \\
+	Empty(posx,posy) \Leftarrow & \lnot Block(\_,posx,posy)  \wedge \lnot Player(\_,\_,posx,posy,\_) \\
 	Exist(posx,posy) \Leftarrow & posx  \geq 0 \wedge posy \geq 0 \\
 	                                                    \wedge & NbColonnes(nbColonnes)  \wedge NbRangees(nbRangees) \\
 	                                                   \wedge & posx < nbColonnes \wedge posy < nbRangees 
@@ -162,10 +174,7 @@ Bien que la problématique présente deux cas distincts pour l'attaque, avec la 
 
 Finalement, l'action $None$ ne possède aucune précondition et n'a aucun effet sur l'environnement.
 
-\section{Description du vocabulaire de nos parties principales }
-% En logique du premier ordre
-% Erick 
-% 1 page
+\section{Description et une explication du vocabulaire des parties principales de la solution}
 
 \section{Description de parties principales de notre solution}
 % Alex
