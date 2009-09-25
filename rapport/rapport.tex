@@ -228,6 +228,27 @@ Finalement, l'action $None$ ne possède aucune précondition et n'a aucun effet 
 % Alex
 % 1 page
 
+% Planification continuelle, multiagent, conditionnelle
+Dans le cadre de notre analyse nous avons également survolé des techniques de planification plus évoluées, c'est-à-dire des techniques pour lesquelles les hypothèses sur l'environnement de jeu sont moins restrictives.  La recherche classique telle qu'envisagée précédemment assume que l'environnement est pleinement observable, statique et déterministe et que les actions affectant l'environnement sont correctes et complètes. Ces hypothèses permettent de réaliser la planification beaucoup plus simplement.
+Dans le cas du jeu \textit{BlockBlitz}, pour que l'IA se comporte de fa\c con optimale, ces hypothèses sont trop restrictives puisque nous n'avons pas affaire à un environnement statique et nous sommes en présence d'autres agents compétiteurs.  Il est donc pertinent d'évaluer les techniques de planification plus avancées.  Les caractéristiques de chacune de ces techniques sont brièvement abordées ci-après ainsi que leur applicabilité au jeu \textit{BlockBlitz}.
+
+\subsection{Planification conditionnelle}
+La planification conditionnelle tente de gérer l'incertitude liée à un environnement non-déterministe en vérifiant à différent points du plan que certaines conditions sont vraies et tente d'apporter un plan de contingence pour les différents scénarios possibles.
+
+Dans notre cas, la planification conditonnelle n'est pas vraiment intéressante puisque l'environnement est déterministe.  Cette technique ne sera donc pas discutée davantage.
+
+\subsection{Replanification et observation de l'exécution du plan}
+La replanification consiste à vérifier au fur et à mesure de l'exécution du plan que celui-ci est encore valide.  Cela peut être fait une action à la fois ou bien pour l'ensemble du plan à chaque étape.  Lorsque les conditions d'applicabilité du plan ne sont plus valides, il est alors possible d'en générer un nouveau. Cela est très approprié dans le cas d'un environnement dynamique.
+
+Cette technique est parfaitement applicable au jeu \textit{BlockBlitz}, et nous l'avons d'ailleurs utilisée avec succès puisque la présence d'autres agents dans le jeu modifie l'environnement pendant l'exécution du plan, le rendant dynamique.  Nous validons à chaque tour la validité du plan avant de fournir la prochaine action.
+
+\subsection{Planification multiagent}
+
+La planification multi-agents tient compte des autres agents actifs dans l'environnement pour l'établissement des plans.  Dans le cas du jeu \textit{BlockBlitz}, il s'agit d'une situation compétitive où les autres agents tentent d'accomplir leur(s) but(s) au détriment ou non de leurs adversaires.  Pour être utilisable, l'IA doit générer des plans pour les autres joueurs et en tenir compte dans l'établissement de son propre plan.  Cela rend la complexité de la recherche beaucoup plus importante et implique un domaine de recherche nommé la théorie des jeux.  Étant donné la complexité cela n'a pas été abordé dans le cadre de cette analyse.  
+
+Cependant, pour réaliser un IA convainquant et intéressant pour le jeu il est nécessaire que celui-ci applique ce type de technique et dans le cadre d'une stratégie de développement de jeu plus global cela vaudrait la peine de s'attarder à comprendre et appliquer cette technique.
+
+
 \section{Conclusion}
 % Alex
 % 0.5 page
