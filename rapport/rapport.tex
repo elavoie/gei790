@@ -53,8 +53,8 @@ Date: \today
 \section{Introduction}
 % Alex
 % 0.5 page
-Ce rapport présente les résultats de recherches pour l'amélioration de l'intelligence de joueur informatisé(JI).
-Les JI qui évoluent entouré de joueur humain font face à un problème critique. En fait ils ne possède pas un intelligence suffisante afin de s'adapter aux multiples situations imprévisible des humains. De plus, les JI sont trop prévisible et rendent les jeux rapidement monotone. À ce jour, l'amélioration de JI l'élément le plus crutiale pour une évolution saine de la compagnie.
+Ce rapport présente les résultats de recherches pour l'amélioration de l'intelligence de joueur informatisé(\textit{JI}).
+Les \textit{JI} qui évoluent entouré de joueur humain font face à un problème critique. En fait ils ne possède pas un intelligence suffisante afin de s'adapter aux multiples situations imprévisible des humains. De plus, les \textit{JI} sont trop prévisible et rendent les jeux rapidement monotone. À ce jour, l'amélioration de \textit{JI} l'élément le plus crutiale pour une évolution saine de la compagnie.
 
 Pour répondre à ce problème, l'ingénieur en chef a déterminé l'utilisation de méthodes d'intelligence artificiel. Les recherches effectué comporte plusieurs volets afin de s'assurer de répondre au besoin réelles de la majorités de nos jeux à plateforme multijoueurs. Voici les études qui ont été réalisées:
 
@@ -70,9 +70,9 @@ Pour répondre à ce problème, l'ingénieur en chef a déterminé l'utilisation
  \item partiellement ordonnée
 \end{enumerate}
 
-Avec une représentation de l'intelligence artificiel en logique de première ordre, il devient très facile de réutiliser les algorithmes d'IA pour une multitudes de jeux différents. Avec cette généralisation possible, les recherches on été effectué et testés dans l'environnement de jeux BlockBlitz. Cette particularité rend la recherche sur les méthodes de l'intelligence artificiel intéressente afin de réduire le coût de développement de tous les jeux dans la compagnie. L'implémentation des algorithmes ont tous été réaliser à l'aide du language prolog afin d'accélérer le développement. Ce dernier est un langage qui est entièrement basé sur la logique du premier ordre.
+Avec une représentation de l'intelligence artificiel en logique de première ordre, il devient très facile de réutiliser les algorithmes d'IA pour une multitudes de jeux différents. Avec cette généralisation possible, les recherches on été effectué et testés dans l'environnement de jeux \textit{BlockBlitz}. Cette particularité rend la recherche sur les méthodes de l'intelligence artificiel intéressente afin de réduire le coût de développement de tous les jeux dans la compagnie. L'implémentation des algorithmes ont tous été réaliser à l'aide du language prolog afin d'accélérer le développement. Ce dernier est un langage qui est entièrement basé sur la logique du premier ordre.
 
-Il existe en fait plusieurs autre techniques d'intelligences artificielles que celles présentées précédemments. C'est pourquoi qu en plus de ces recherches, une analyse sommaire de méthodes plus évolué est aussi présenté. À la fin de ce rapport se trouves toutes les recommandations à utiliser pour résouble l'incapacité actuel de JI.
+Il existe en fait plusieurs autre techniques d'intelligences artificielles que celles présentées précédemments. C'est pourquoi qu en plus de ces recherches, une analyse sommaire de méthodes plus évolué est aussi présenté. À la fin de ce rapport se trouves toutes les recommandations à utiliser pour résouble l'incapacité actuel de \textit{JI}.
 
 
 \section{Recommandation et justification de la technique de planification}
@@ -108,14 +108,27 @@ Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'a
 % 1.5 pages
 Par soucis de concision et de lisibilité, l'environnement de jeu initial et l'environnement de jeu final seront omis des paramètres, des préconditions et des effets des actions présentées bien qu'ils soient utilisés de fa\c con explicite dans le programme remis.  Pour l'ensemble des actions présentées, nous assumerons un environnement de jeu composé des faits suivants, les multiplicités présentées représentent le nombre de faits distincts du type présenté pouvant être retrouvés dans l'environnement, ex: nbJoueur(N), 1 signifie qu'un seul fait de type nbJoueur est présent dans l'environnement et block(...), 1+ signifie que chaque bloc est représenté par son propre fait et qu'il y en a autant que de blocs.
 
-\begin{center}  \begin{tabular}{@{} ccc @{}}    \hline    Fait & Multiplicité & Signification \\     \hline    NbJoueur(n) & 1 & $n$ est le nombre de joueurs \\     NbBlock(n) & 1 & $n$ est le nombre de blocks \\     NbColonnes(n) & 1 & $n$ est le nombre de colonnes \\     NbRangees(n) & 1 & $n$ est le nombre de rangées \\     Block(id,x,y) & 1+ & $id$ est la valeur du block, \\
+\begin{center}
+  \begin{tabular}{@{} ccc @{}}
+    \hline
+    Fait & Multiplicité & Signification \\ 
+    \hline
+    NbJoueur(n) & 1 & $n$ est le nombre de joueurs \\ 
+    NbBlock(n) & 1 & $n$ est le nombre de blocks \\ 
+    NbColonnes(n) & 1 & $n$ est le nombre de colonnes \\ 
+    NbRangees(n) & 1 & $n$ est le nombre de rangées \\ 
+    Block(id,x,y) & 1+ & $id$ est la valeur du block, \\
                                   && $x$ est la position en selon $x$ \\
-                                  && et $y$ est la position selon $y$ \\     Player(id,nom,x,y,blockId) & 1+ & $id$ est l'identifiant unique du joueur \\
+                                  && et $y$ est la position selon $y$ \\ 
+    Player(id,nom,x,y,blockId) & 1+ & $id$ est l'identifiant unique du joueur \\
                                                               && $nom$ est le nom assigné au joueur \\ 
                                                               && $x$ est la position selon $x$ \\
                                                               && $y$ est la position selon $y$ \\
                                                               && $blockId$ est l'identifiant du bloc possédé par le joueur\\
-    Nom(nom) & 1 & $nom$ est le nom du joueur \\     \hline  \end{tabular}\end{center}
+    Nom(nom) & 1 & $nom$ est le nom du joueur \\ 
+    \hline
+  \end{tabular}
+\end{center}
 
 En plus de ces faits de base, les prédicats suivants sont utilisés pour faciliter l'expression des préconditions et des effets. \\
 \\
@@ -200,6 +213,19 @@ Finalement, l'action $None$ ne possède aucune précondition et n'a aucun effet 
 \section{Description de parties principales de notre solution}
 % Alex
 % 1 page
+La particularité principale que nou avons implémenté dans notre solution est la méthode généralisé du parcours de graphe. Tout en respectant les méthodes de la logique de première ordre, nous avons transcrit litéralement l'algorithme. C'est à dire que nous ne forçons pas une structure de donnée à l'intérieur de l'algorithme. Nous avons procédé ainsi puisque cette algorithme est noyau de tous les méthodes de recherches que nous avons utilisé (\textit{profondeur d'abord, largeur d'abord, coût uniforme, avare et A*}). C'est d'ailleurs ainsi que nous sommes parvenu à comparer rapidement les performances de ces cinqs techniques.
+
+Voici les structures de données que nous avons utilisé dans notre implémentation de planification.
+
+\begin{itemize}
+\item \textbf{Node} : \textit{node(Etat,NoeudParent,Action,Profondeur,Cout)}
+\item \textbf{Action} : \textit{action(Action,Etat, Cout, EtatResultant, CoutResultant)}
+\end{itemize}
+
+Le \textbf{Node} est l'élément qui représente le graphe que l'algorithme de recherche parcours. L'\textbf{Action}, tel que présenté à la section de la représentation STRIPS des actions possible de \textit{BlockBlitz}, valide d'abord si le mouvement peut être effectuer sur l'environnement. Nous avons cependant explicitement partager un environnement aulieu d'utiliser la base de connaissance de l'interpréteur prolog. L'environnement est représenté par la variable \textit{Etat}. De plus, si l'action est effectivement valide, nous retournons l'environnement résultant ainsi que le nouveau coût qui est relié au parcous effectué.
+
+Avec notre représentation, nous avons pu effectué l'expansion de nos noeuds lors du parcours de graphe de façon efficace. Dans le cas de \textit{BlockBlitz}, l'expansion signifie de trouvé la prochaine action à effectuer. Nous avons donc utilisé la fonction \textit{findall} avec comme objectif le predicat avec seulment l'état et le cout comme variable assigné. Celà nous donne alors la liste des noeuds succésseurs avec leur nouvelles environnement déjà construite ainsi que le cout de l'action. C'est la fonction \textit{findall} qui, avec l'inférence et le fait de trouvé un action valide, retourne le nouveau cout et l'environnement résultant et l'ajoute à la liste résultante.
+
 
 \section{Recommandation de la pertinence des methodes d'algorithme évolué}
 % Alex
