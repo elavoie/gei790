@@ -64,9 +64,21 @@ Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'a
 
 \subsubsection{Planification par recherche d'espace d'état}
 
+La planification par recherche d'espace d'état est la plus simple à mettre en oeuvre puisqu'elle est conceptuellement très similaire au comportement de l'agent dans la situation réelle.  Il s'agit en quelque sorte d'essayer différent plan possible et d'observer l'évolution de l'environnement pour chacun de ces plans jusqu'à ce que l'on obtienne l'état désiré.  Il est possible de faire la recherche par chaînage avant ou arrière en s'appuyant sur les préconditions et les effets des différentes actions possibles.
 
+Il a été constaté que le chaînage arrière peut éliminer, pour certaines classes de problèmes, l'exploration de branches dans l'arbre de recherche qui ne mènent pas à la solution.  Cependant, dans le cas du jeu \it{BlockBlitz}, la difficulté de spécifier complètement et adéquatement la configuration finale de l'environnement de jeu pour atteindre le but ``Avoir un bloc'' rend très difficile l'application du chaînage arrière.
+
+Le chaînage avant est plus aisé dans notre cas puisque la situation initiale du point de vue de l'arbre de recherche est une situation complètement connue puisque l'environnement de jeu est complètement spécifié et passé au joueur à chaque tour de jeu.
+
+Finalement, dans le cas de la recherche par espace d'état, la recherche d'un heuristique valide dans le cas d'un but composé de plusieurs conditions demande un peu de fignolage car il faut toujours s'assurer que l'heuristique ne surestime pas le coût d'une action.  Pour cela, il est possible d'appliquer l'hypothèse de l'indépendance des sous-buts ou de relâcher les conditions du problème.  Comme le but choisi pour l'intelligence du joueur était unique, nous ne nous sommes pas attardé davantage sur cette question.
 
 \subsubsection{Planification partiellement ordonnée}
+
+La planification partiellement ordonnée est une technique un peu plus sophistiquée, qui tente de manipuler la structure logique du problème pour en dériver un plan.  Ce faisant, il est alors possible de trouver une série d'action et leurs dépendances sans que cette description prescrive une série d'action \it{unique}.  Cela est possible en raisonnant \it{exclusivement} sur les préconditions et les effets des actions, sans tenir compte de l'ensemble de l'environnement.
+
+Cette technique permet une plus grande flexibilité dans l'exécution du plan puisqu'une contrainte inconnue au moment de l'élaboration du plan peut être gérée adéquatement en effectuant un choix parmi les actions possibles au moment de l'exécution.  De plus, l'élaboration du plan pourrait potentiellement être plus efficace si l'espace de recherche sur les actions est moindre que sur les environnement de jeu potentiels.
+
+Cependant, cette technique est plus difficile à appliquer dans le cas où les préconditions ou effets des actions sont représentées avec des variables.  De plus, 
 
 \subsection{Techniques de recherche}
 
