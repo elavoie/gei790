@@ -32,7 +32,7 @@
 {\large\em GEI790:  Intelligence Artificielle formelle}
 \vfill
 Rapport de l'App 1\\
-présenté professorale de S8\\
+présenté à l'équipe professorale de S8\\
 \vfill
 par:\\
 Alexandre Malo\hspace{2cm} 05 659 076\\
@@ -143,12 +143,45 @@ pour l'implémentation de la planification.
 
 Afin de sélectionner la bonne méthode de recherche, nous avons fixé deux critères. Le premier et le temps de calcul et le second est la qualité du plan. Il va de soit qu'il faut trouvé un compromis entre le temps et le compromis. Nous allons négliger la mémoire car nous n'avons trouvé de moyen de calculer la consomation maximale de l'algorithme dans l'interpréteur prolog. Nous avons aussi négliger la compxité du développement car chaque méthode est sensiblement identique. La seul implémentation qui varie est l'ajout et le retrait d'un noeud de la liste ouvert.
 
-Pour ce qui est de la qualité du plan, 
+Pour ce qui est du classement par rapport à la qualité du plan, la théorie nous indique une ordre à deux niveau. C'est à dire ceux qui sont optimal et ceux qui ne le sont pas nécéssairement.
+
+\begin{center}
+  \begin{tabular}{@{} cc @{}}
+    \hline
+    Méthodes absolument optimals & Méthode possiblement optimals\\ 
+    \hline
+    A* & Avare\\     
+    Coût uniforme & Largeur d'abord \\
+    &Profondeur d'abord\\
+    \hline
+  \end{tabular}
+\end{center}
+
+La méthode de largeur d'abord n'est pas nécéssairement optimal dans notre cas car chaque actions possible n'a pas le même coût.
+
+Voici maintenant un graphique démontrant le temps d'exécution pour chacune des cinq méthodes précédement présenté. Chaque colone est l'exécution d'un test qui possède un environnement plus grand. Voici les environnement que nous avons utilisé pour effectuer nos tests de performances:
+
+\begin{itemize}
+\item 
+\textbf{Environnement 1} :- 
+[5, 10, 15, 15, [[1,'Inconnu1',7,7,0], [2,'Inconnu2',8,10,13], [3,'Inconnu3',2,0,15], [4,'Inconnu4',1,10,1], [5,Nom,10,12,0]], [[2,12,10], [3,7,0], [4,2,4], [5,12,14], [6,14,10], [7,7,4], [8,10,3]]]
+\item 
+\textbf{Environnement 2} :- 
+[5, 10, 25, 25, [[1,Nom,10,16,0], [2,'Inconnu2',7,23,0], [3,'Inconnu3',8,9,0], [4,'Inconnu4',0,5,0], [5,'Inconnu5',4,16,3]], [[1,17,13], [2,20,2], [4,5,3], [5,4,14], [6,14,10], [7,18,17], [8,20,21], [9,15,5], [10,4,15]]]
+\item 
+\textbf{Environnement 3} :- 
+[5, 10, 50, 50, [[1,'Inconnu1',13,26,0], [2,'Inconnu2',43,44,0], [3,Nom,10,16,0], [4,'Inconnu4',1,32,0], [5,'Inconnu5',16,16,16]], [[1,17,13], [2,20,2], [4,5,3], [5,4,14], [6,14,10], [7,18,17], [8,20,21], [9,15,5], [10,4,15]]]
+\item 
+\textbf{Environnement 4} :- 
+[5, 10, 75, 75, [[1,'Inconnu1',38,14,0], [2,'Inconnu2',45,39,0], [3,'Inconnu3',31,60,0], [4,Nom,10,16,0], [5,'Inconnu5',13,35,12]], [[1,5,0], [2,52,61], [3,3,48], [4,7,27], [5,23,17], [6,28,29], [7,55,21], [8,12,0], [9,64,48]]]
+\end{itemize}
+
 
 \begin{figure}[!h] %on ouvre l'environnement figure
 \includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
 \caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
 \end{figure}
+
 
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 
