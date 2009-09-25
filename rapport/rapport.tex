@@ -17,11 +17,11 @@
 % Custom commands for the report
 \newcommand{\action}[3] {
 \begin{tabbing}
-\it{Action}\=\it{(#1)},\\
+\textit{Action}\=\textit{(#1)},\\
 \> PRECOND: 
      #2 
      \\
-\> EFFECT: \it{#3} .\\
+\> EFFECT: \textit{#3} .\\
 \end{tabbing}}
 
 
@@ -85,11 +85,50 @@ Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'a
 
 \subsubsection{Planification par recherche d'espace d'état}
 
+La planification par recherche d'espace d'état est la plus simple à mettre en oeuvre puisqu'elle est conceptuellement très similaire au comportement de l'agent dans la situation réelle.  Il s'agit en quelque sorte d'essayer différent plan possible et d'observer l'évolution de l'environnement pour chacun de ces plans jusqu'à ce que l'on obtienne l'état désiré.  Il est possible de faire la recherche par chaînage avant ou arrière en s'appuyant sur les préconditions et les effets des différentes actions possibles.
 
+Il a été constaté que le chaînage arrière peut éliminer, pour certaines classes de problèmes, l'exploration de branches dans l'arbre de recherche qui ne mènent pas à la solution.  Cependant, dans le cas du jeu \textit{BlockBlitz}, la difficulté de spécifier complètement et adéquatement la configuration finale de l'environnement de jeu pour atteindre le but ``Avoir un bloc'' rend très difficile l'application du chaînage arrière.
+
+Le chaînage avant est plus aisé dans notre cas puisque la situation initiale du point de vue de l'arbre de recherche est une situation complètement connue puisque l'environnement de jeu est complètement spécifié et passé au joueur à chaque tour de jeu.
+
+Finalement, dans le cas de la recherche par espace d'état, la recherche d'un heuristique valide dans le cas d'un but composé de plusieurs conditions demande un peu de fignolage car il faut toujours s'assurer que l'heuristique ne surestime pas le coût d'une action.  Pour cela, il est possible d'appliquer l'hypothèse de l'indépendance des sous-buts ou de relâcher les conditions du problème.  Comme le but choisi pour l'intelligence du joueur était unique, nous ne nous sommes pas attardé davantage sur cette question.
 
 \subsubsection{Planification partiellement ordonnée}
 
+La planification partiellement ordonnée est une technique un peu plus sophistiquée, qui tente de manipuler la structure logique du problème pour en dériver un plan.  Ce faisant, il est alors possible de trouver une série d'action et leurs dépendances sans que cette description prescrive une série d'action \textit{unique}.  Cela est possible en raisonnant \textit{exclusivement} sur les préconditions et les effets des actions, sans tenir compte de l'ensemble de l'environnement.
+
+Cette technique permet une plus grande flexibilité dans l'exécution du plan puisqu'une contrainte inconnue au moment de l'élaboration du plan peut être gérée adéquatement en effectuant un choix parmi les actions possibles au moment de l'exécution.  De plus, l'élaboration du plan pourrait potentiellement être plus efficace si l'espace de recherche sur les actions est moindre que sur les environnement de jeu potentiels.
+
+Cependant, cette technique est plus difficile à appliquer dans le cas où les préconditions ou effets des actions sont représentées avec des variables.  De plus, l'établissement d'heuristiques pour la planification partielle n'est pas un domaine complètement compris.
+
 \subsection{Techniques de recherche}
+Les techniques de recherche analysées se répartissent en deux grandes catégories, informées ou non-informées, selon qu'elles utilisent ou non un heuristique pour guider la recherche.  De plus, l'utilisation d'une liste fermée ou non détermine si on effectue un parcours d'arbre ou de graphe et peut influer de fa\c con significative sur l'utilisation mémoire.  Étant donné le temps de développement disponible pour la réalisation de cette analyse, seul les algorithmes de parcours de graphe ont été considérés.  De plus, en première analyse, nous n'avons pas tenté d'analyser la complexité des structures de données utilisées pour implémenter chacun des algorithmes mais seul la complexité de l'algorithme lui même a été étudiée.  Pour une analyse plus exhaustive, il faudrait en tenir compte.
+
+\subsubsection{Recherche non-informée}
+Les algorithmes de recherche non-informée font l'équivalent d'une recherche à l'aveugle au sens où l'algorithme ne possède aucun indicateur lui permettant de déterminer s'il se rapproche du but pendant la recherche.  Puisqu'il était très simple de tester différents algorithmes en changeant les structures de données utilisées, la recherche en largeur, la recherche en profondeur et la recherche par coût uniforme ont été testées.
+
+Dans les trois cas, en tenant compte de l'utilisation d'une liste fermée, les algorithmes sont complets, au sens où ils vont tous trouver une solution s'il en existe une. À noter que la recherche en profondeur d'abord n'est pas complète sans l'utilisation d'une liste fermée puisqu'elle peut se retrouver dans une branche de profondeur infinie.
+
+Cependant, seuls la recherche en largeur et la recherche en profondeur garantissent un résultat optimal, c'est-à-dire que la solution trouvée aura le moindre coût de toutes les solutions possibles. Cela au prix d'une utilisation mémoire beaucoup plus importante que pour la recherche en profondeur d'abord.
+
+Dans tous les cas, l'analyse en complexité permet de mettre en lumière que l'explosion combinatoire des états à explorer dans la recherche non-informée la rend impraticable dans le cas où l'espace de recherche est plus que modeste.  
+
+\subsubsection{Recherche informée}
+La recherche informée utilise quant à elle une mesure approximative de rapprochement du but. Pour cette analyse, l'étude s'est limitée à la comparaison des algorithmes de recherche non-informée avec les algorithmes avare et A*.
+
+Dans le cas de la recherche avare, seule la mesure de rapprochement du but à l'aide de l'heuristique est évaluée pour le choix du prochain noeud à explorer.  Cela a pour conséquence que la recherche avare est non-optimale et incomplète.
+
+Dans le cas de la recherche A*, le total du coût du parcours et de la valeur de l'heuristique sont pris en compte pour le choix du prochain noeud à explorer.  Cela est suffisant pour assurer la complétude et l'optimalité.
+
+Dans les deux cas, le choix de l'heuristique est primordial pour le bon fonctionnement des algorithmes.  Celle-ci ne doit jamais surestimer le coût d'une action.  Cela peut être très payant au bout du compte puisque qu'une section beaucoup plus restreinte de l'arbre de recherche doit être explorée.  En première analyse, cela rend les algorithmes de recherche beaucoup plus attrayant.  Encore une fois, il faut cependant tenir compte de la complexité des opérations sur les structures de données utilisées pour mesurer l'efficacité d'une implémentation ainsi que le coût de calcul de l'heuristique.  
+
+Finalement, le choix de la technique de recherche doit être réalisé en fonction des paramètre du problème, notamment la taille de l'espace de recherche, les contraintes d'utilisation mémoire et de temps processeur et l'importance d'avoir un plan optimal. 
+
+
+\subsection{Choix de la technique}
+
+Étant donné les éléments mentionnés plus haut, nous avons choisi d'utiliser la planification par recherche d'espace d'état pour la simplicité de l'implémentation et du choix de l'heuristique et à la lumière à la fois de l'analyse réalisée et des tests d'implémentation nous avons choisi la technique de recherche par % À compléter 
+pour l'implémentation de la planification.
 
 \section{Resultats de tests}
 % Alex et Erick
@@ -102,6 +141,11 @@ Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'a
 % - Complexite de developement
 
 % - Couvrir les algorithmes de recherche informee et non-informee
+
+\begin{figure}[!h] %on ouvre l'environnement figure
+\includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
+\caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
+\end{figure}
 
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 
@@ -148,7 +192,7 @@ Les deux derniers prédicats sont les suivants.  $Empty(posx,posy)$ assure que l
 Il est alors très aisé d'exprimer les préconditions et les effets de chacune des actions.
 
 \begin{tabbing}
-\it{Action}\=\it{(Move(direction))}\=,\\
+\textit{Action}\=\textit{(Move(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Empty(newx,newy) $ \\               
@@ -159,7 +203,7 @@ Il est alors très aisé d'exprimer les préconditions et les effets de chacune 
 Pour le cas où le joueur ne possède pas de bloc, l'action $take$ est la suivante:
 
 \begin{tabbing}
-\it{Action}\=\it{(Take(direction))}\=,\\
+\textit{Action}\=\textit{(Take(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,0)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
@@ -170,7 +214,7 @@ Pour le cas où le joueur ne possède pas de bloc, l'action $take$ est la suivan
 
 Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 \begin{tabbing}
-\it{Action}\=\it{(Take(direction))}\=,\\
+\textit{Action}\=\textit{(Take(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
@@ -181,7 +225,7 @@ Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 \end{tabbing}
 
 \begin{tabbing}
-\it{Action}\=\it{(Drop(direction))}\=,\\
+\textit{Action}\=\textit{(Drop(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \  \lnot Player(id,nom,posx,posy,0) $ \\
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
@@ -194,7 +238,7 @@ Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 Bien que la problématique présente deux cas distincts pour l'attaque, avec la représentation proposée, la même description s'applique dans les deux cas (joueur possède ou non un bloc).  De plus, pour fins de planification, nous allons considérer que l'action réussi toujours.:
 
 \begin{tabbing}
-\it{Action}\=\it{(Attack(direction))}\=,\\
+\textit{Action}\=\textit{(Attack(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $  \wedge \ Player(id2,nom2,newx,newy,blockid2) $ \\
