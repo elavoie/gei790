@@ -17,11 +17,11 @@
 % Custom commands for the report
 \newcommand{\action}[3] {
 \begin{tabbing}
-\it{Action}\=\it{(#1)},\\
+\textit{Action}\=\textit{(#1)},\\
 \> PRECOND: 
      #2 
      \\
-\> EFFECT: \it{#3} .\\
+\> EFFECT: \textit{#3} .\\
 \end{tabbing}}
 
 
@@ -66,7 +66,7 @@ Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'a
 
 La planification par recherche d'espace d'état est la plus simple à mettre en oeuvre puisqu'elle est conceptuellement très similaire au comportement de l'agent dans la situation réelle.  Il s'agit en quelque sorte d'essayer différent plan possible et d'observer l'évolution de l'environnement pour chacun de ces plans jusqu'à ce que l'on obtienne l'état désiré.  Il est possible de faire la recherche par chaînage avant ou arrière en s'appuyant sur les préconditions et les effets des différentes actions possibles.
 
-Il a été constaté que le chaînage arrière peut éliminer, pour certaines classes de problèmes, l'exploration de branches dans l'arbre de recherche qui ne mènent pas à la solution.  Cependant, dans le cas du jeu \it{BlockBlitz}, la difficulté de spécifier complètement et adéquatement la configuration finale de l'environnement de jeu pour atteindre le but ``Avoir un bloc'' rend très difficile l'application du chaînage arrière.
+Il a été constaté que le chaînage arrière peut éliminer, pour certaines classes de problèmes, l'exploration de branches dans l'arbre de recherche qui ne mènent pas à la solution.  Cependant, dans le cas du jeu \textit{BlockBlitz}, la difficulté de spécifier complètement et adéquatement la configuration finale de l'environnement de jeu pour atteindre le but ``Avoir un bloc'' rend très difficile l'application du chaînage arrière.
 
 Le chaînage avant est plus aisé dans notre cas puisque la situation initiale du point de vue de l'arbre de recherche est une situation complètement connue puisque l'environnement de jeu est complètement spécifié et passé au joueur à chaque tour de jeu.
 
@@ -74,7 +74,7 @@ Finalement, dans le cas de la recherche par espace d'état, la recherche d'un he
 
 \subsubsection{Planification partiellement ordonnée}
 
-La planification partiellement ordonnée est une technique un peu plus sophistiquée, qui tente de manipuler la structure logique du problème pour en dériver un plan.  Ce faisant, il est alors possible de trouver une série d'action et leurs dépendances sans que cette description prescrive une série d'action \it{unique}.  Cela est possible en raisonnant \it{exclusivement} sur les préconditions et les effets des actions, sans tenir compte de l'ensemble de l'environnement.
+La planification partiellement ordonnée est une technique un peu plus sophistiquée, qui tente de manipuler la structure logique du problème pour en dériver un plan.  Ce faisant, il est alors possible de trouver une série d'action et leurs dépendances sans que cette description prescrive une série d'action \textit{unique}.  Cela est possible en raisonnant \textit{exclusivement} sur les préconditions et les effets des actions, sans tenir compte de l'ensemble de l'environnement.
 
 Cette technique permet une plus grande flexibilité dans l'exécution du plan puisqu'une contrainte inconnue au moment de l'élaboration du plan peut être gérée adéquatement en effectuant un choix parmi les actions possibles au moment de l'exécution.  De plus, l'élaboration du plan pourrait potentiellement être plus efficace si l'espace de recherche sur les actions est moindre que sur les environnement de jeu potentiels.
 
@@ -121,6 +121,11 @@ pour l'implémentation de la planification.
 
 % - Couvrir les algorithmes de recherche informee et non-informee
 
+\begin{figure}[!h] %on ouvre l'environnement figure
+\includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
+\caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
+\end{figure}
+
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 
 % 1.5 pages
@@ -153,7 +158,7 @@ Les deux derniers prédicats sont les suivants.  $Empty(posx,posy)$ assure que l
 Il est alors très aisé d'exprimer les préconditions et les effets de chacune des actions.
 
 \begin{tabbing}
-\it{Action}\=\it{(Move(direction))}\=,\\
+\textit{Action}\=\textit{(Move(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Empty(newx,newy) $ \\               
@@ -164,7 +169,7 @@ Il est alors très aisé d'exprimer les préconditions et les effets de chacune 
 Pour le cas où le joueur ne possède pas de bloc, l'action $take$ est la suivante:
 
 \begin{tabbing}
-\it{Action}\=\it{(Take(direction))}\=,\\
+\textit{Action}\=\textit{(Take(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,0)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
@@ -175,7 +180,7 @@ Pour le cas où le joueur ne possède pas de bloc, l'action $take$ est la suivan
 
 Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 \begin{tabbing}
-\it{Action}\=\it{(Take(direction))}\=,\\
+\textit{Action}\=\textit{(Take(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
@@ -186,7 +191,7 @@ Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 \end{tabbing}
 
 \begin{tabbing}
-\it{Action}\=\it{(Drop(direction))}\=,\\
+\textit{Action}\=\textit{(Drop(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \  \lnot Player(id,nom,posx,posy,0) $ \\
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
@@ -199,7 +204,7 @@ Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
 Bien que la problématique présente deux cas distincts pour l'attaque, avec la représentation proposée, la même description s'applique dans les deux cas (joueur possède ou non un bloc).  De plus, pour fins de planification, nous allons considérer que l'action réussi toujours.:
 
 \begin{tabbing}
-\it{Action}\=\it{(Attack(direction))}\=,\\
+\textit{Action}\=\textit{(Attack(direction))}\=,\\
 \> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
 \> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
 \> \> $  \wedge \ Player(id2,nom2,newx,newy,blockid2) $ \\
