@@ -13,6 +13,19 @@
 \geometry{verbose, letterpaper,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
 \usepackage[french]{babel}
 
+
+% Custom commands for the report
+\newcommand{\action}[3] {
+\begin{tabbing}
+\it{Action}\=\it{(#1)},\\
+\> PRECOND: 
+     #2 
+     \\
+\> EFFECT: \it{#3} .\\
+\end{tabbing}}
+
+
+
 \begin{document}
 \thispagestyle{empty}
 \begin{center}
@@ -65,6 +78,18 @@ Il existe en fait plusieurs autre techniques d'intelligences artificielles que c
 \section{Recommandation et justification de la technique de planification}
 % Erick
 % 3 pages
+L'analyse des différentes techniques de planification a permis de faire ressortir les éléments suivants.  Cependant, étant donné que le choix de la technique de planification est indépendant du choix de la technique de recherche qui l'implémente, ces deux sujets seront traités séparément.
+
+\subsection{Techniques de planification}
+Dans les deux cas,il s'agit de trouver une séquence d'action qui permettent d'atteindre un but. Dans le cas de la planification de la recherche par espace d'état, la recherche s'effectue sur l'état de l'environnement de jeu alors que dans le cas de la planification partiellement ordonnée, la recherche s'effectue sur l'environnement d'actions, c'est-à-dire les actions et leur dépendances mutuelles. 
+
+\subsubsection{Planification par recherche d'espace d'état}
+
+
+
+\subsubsection{Planification partiellement ordonnée}
+
+\subsection{Techniques de recherche}
 
 \section{Resultats de tests}
 % Alex et Erick
@@ -76,14 +101,101 @@ Il existe en fait plusieurs autre techniques d'intelligences artificielles que c
 % - Qualite du plan
 % - Complexite de developement
 
+% - Couvrir les algorithmes de recherche informee et non-informee
+
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 
 % 1.5 pages
+Par soucis de concision et de lisibilité, l'environnement de jeu initial et l'environnement de jeu final seront omis des paramètres, des préconditions et des effets des actions présentées bien qu'ils soient utilisés de fa\c con explicite dans le programme remis.  Pour l'ensemble des actions présentées, nous assumerons un environnement de jeu composé des faits suivants, les multiplicités présentées représentent le nombre de faits distincts du type présenté pouvant être retrouvés dans l'environnement, ex: nbJoueur(N), 1 signifie qu'un seul fait de type nbJoueur est présent dans l'environnement et block(...), 1+ signifie que chaque bloc est représenté par son propre fait et qu'il y en a autant que de blocs.
 
-\section{Description du vocabulaire de nos parties principales }
-% En logique du premier ordre
-% Erick 
-% 1 page
+\begin{center}  \begin{tabular}{@{} ccc @{}}    \hline    Fait & Multiplicité & Signification \\     \hline    NbJoueur(n) & 1 & $n$ est le nombre de joueurs \\     NbBlock(n) & 1 & $n$ est le nombre de blocks \\     NbColonnes(n) & 1 & $n$ est le nombre de colonnes \\     NbRangees(n) & 1 & $n$ est le nombre de rangées \\     Block(id,x,y) & 1+ & $id$ est la valeur du block, \\
+                                  && $x$ est la position en selon $x$ \\
+                                  && et $y$ est la position selon $y$ \\     Player(id,nom,x,y,blockId) & 1+ & $id$ est l'identifiant unique du joueur \\
+                                                              && $nom$ est le nom assigné au joueur \\ 
+                                                              && $x$ est la position selon $x$ \\
+                                                              && $y$ est la position selon $y$ \\
+                                                              && $blockId$ est l'identifiant du bloc possédé par le joueur\\
+    Nom(nom) & 1 & $nom$ est le nom du joueur \\     \hline  \end{tabular}\end{center}
+
+En plus de ces faits de base, les prédicats suivants sont utilisés pour faciliter l'expression des préconditions et des effets. \\
+\\
+Il est nécessaire de traduire la direction en coordonnées. Pour ce faire, le prédicat $Direction(posx,posy,newx,newy,direction)$ est utilisé pour déterminer la nouvelle position du joueur à partir de sa position précédente.  Il y a huit entrées pour chacune des direction.  L'entrée pour la direction $1$ est la suivante, les autres entrées sont laissées comme exercice au lecteur.
+\begin{equation*}
+	Direction(posx,posy,newx,newy, 1) \Leftarrow newy = posy + 1 \wedge newx = posx 
+\end{equation*}
+
+Les deux derniers prédicats sont les suivants.  $Empty(posx,posy)$ assure que la case visée ne contient rien, c'est-à-dire aucun joueur ou bloc, et $Exist(posx,posy)$ valide que la case visée appartient bel et bien à l'environnement, c'est-à-dire qu'elle est contenue dans ses limites.
+\begin{eqnarray*}
+	Empty(posx,posy) \Leftarrow & \lnot Block(\_,posx,posy)  \wedge \lnot Player(\_,\_,posx,posy,\_) \\
+	Exist(posx,posy) \Leftarrow & posx  \geq 0 \wedge posy \geq 0 \\
+	                                                    \wedge & NbColonnes(nbColonnes)  \wedge NbRangees(nbRangees) \\
+	                                                   \wedge & posx < nbColonnes \wedge posy < nbRangees 
+\end{eqnarray*}
+
+Il est alors très aisé d'exprimer les préconditions et les effets de chacune des actions.
+
+\begin{tabbing}
+\it{Action}\=\it{(Move(direction))}\=,\\
+\> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
+\> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
+\> \> $   \wedge \ Exist(newx,newy) \wedge Empty(newx,newy) $ \\               
+\> EFFECT: \>$ \lnot Player(id,nom,posx,posy,blockid) $ \\
+\>  \> $\wedge\ Player(id,nom,newx,newy,blockid)$ .\\
+\end{tabbing}
+
+Pour le cas où le joueur ne possède pas de bloc, l'action $take$ est la suivante:
+
+\begin{tabbing}
+\it{Action}\=\it{(Take(direction))}\=,\\
+\> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,0)$ \\ 
+\> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
+\> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
+\> EFFECT: \>$ \lnot Player(id,nom,posx,posy,0) $ \\
+\>  \> $\wedge\ Player(id,nom,newx,newy,newblockid)$ \\
+\> \> $\wedge\ \lnot Block(newblockid,newx,newy) $ .\\
+\end{tabbing}
+
+Pour le cas où le joueur possède déjà un bloc, l'action $take$ est plutôt:
+\begin{tabbing}
+\it{Action}\=\it{(Take(direction))}\=,\\
+\> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
+\> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
+\> \> $   \wedge \ Exist(newx,newy) \wedge Block(newblockid,newx,newy) $ \\               
+\> EFFECT: \>$ \lnot Player(id,nom,posx,posy,blockid) $ \\
+\>  \> $\wedge\ Player(id,nom,newx,newy,newblockid)$ \\
+\> \> $\wedge\ \lnot Block(newblockid,newx,newy) $ \\
+\> \> $\wedge\ Block(blockid,newx,newy) $ .\\
+\end{tabbing}
+
+\begin{tabbing}
+\it{Action}\=\it{(Drop(direction))}\=,\\
+\> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
+\> \> $  \wedge \  \lnot Player(id,nom,posx,posy,0) $ \\
+\> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
+\> \> $   \wedge \ Exist(newx,newy) \wedge Empty(newx,newy) $ \\               
+\> EFFECT: \>$ \lnot Player(id,nom,posx,posy,blockid) $ \\
+\>  \> $\wedge\ Player(id,nom,posx,posy,0)$ \\
+\> \> $\wedge\ Block(blockid,newx,newy) $ .\\
+\end{tabbing}
+
+Bien que la problématique présente deux cas distincts pour l'attaque, avec la représentation proposée, la même description s'applique dans les deux cas (joueur possède ou non un bloc).  De plus, pour fins de planification, nous allons considérer que l'action réussi toujours.:
+
+\begin{tabbing}
+\it{Action}\=\it{(Attack(direction))}\=,\\
+\> PRECOND: \> $Nom(nom) \wedge Player(id,nom,posx,posy,blockid)$ \\ 
+\> \> $  \wedge \ Direction(posx,posy,newx,newy,direction) $ \\
+\> \> $  \wedge \ Player(id2,nom2,newx,newy,blockid2) $ \\
+\> \> $  \wedge \ \lnot Player(id2,nom2,newx,newy,0) $ \\
+\> \> $ \wedge\ \lnot Block(bid,newx,newy) \wedge \ Exist(newx,newy)$ \\               
+\> EFFECT: \>$ \lnot Player(id,nom,posx,posy,blockid) $ \\
+\>  \> $\wedge\ Player(id,nom,posx,posy,blockid2)$ \\
+\>  \> $\wedge\ \lnot Player(id2,nom2,newx,newy,blockid2)$ \\
+\>  \> $\wedge\ Player(id2,nom2,newx,newy,blockid)$ .\\
+\end{tabbing}
+
+Finalement, l'action $None$ ne possède aucune précondition et n'a aucun effet sur l'environnement.
+
+\section{Description et une explication du vocabulaire des parties principales de la solution}
 
 \section{Description de parties principales de notre solution}
 % Alex
