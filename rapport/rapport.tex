@@ -164,27 +164,37 @@ Voici maintenant un graphique démontrant le temps d'exécution pour chacune des
 \begin{itemize}
 \item 
 \textbf{Environnement 1} :- 
-[5, 10, 15, 15, [[1,'Inconnu1',7,7,0], [2,'Inconnu2',8,10,13], [3,'Inconnu3',2,0,15], [4,'Inconnu4',1,10,1], [5,Nom,10,12,0]], [[2,12,10], [3,7,0], [4,2,4], [5,12,14], [6,14,10], [7,7,4], [8,10,3]]]
+[5, 2, 73, 73, [[1,'Inconnu1',72,0,0], [2,'Inconnu2',16,32,0], [3,'Inconnu3',40,64,0], [4,'Inconnu4',48,24,0], [5,'LaMa',0,0,0]], [[1,0,72], [2,48,48]]]
 \item 
 \textbf{Environnement 2} :- 
-[5, 10, 25, 25, [[1,Nom,10,16,0], [2,'Inconnu2',7,23,0], [3,'Inconnu3',8,9,0], [4,'Inconnu4',0,5,0], [5,'Inconnu5',4,16,3]], [[1,17,13], [2,20,2], [4,5,3], [5,4,14], [6,14,10], [7,18,17], [8,20,21], [9,15,5], [10,4,15]]]
+[5, 2, 19, 19, [[1,'Inconnu1',18,0,0], [2,'Inconnu2',4,8,0], [3,'Inconnu3',10,16,0], [4,'Inconnu4',12,6,0], [5,'LaMa',0,0,0]], [[1,0,18], [2,12,12]]]
 \item 
 \textbf{Environnement 3} :- 
-[5, 10, 50, 50, [[1,'Inconnu1',13,26,0], [2,'Inconnu2',43,44,0], [3,Nom,10,16,0], [4,'Inconnu4',1,32,0], [5,'Inconnu5',16,16,16]], [[1,17,13], [2,20,2], [4,5,3], [5,4,14], [6,14,10], [7,18,17], [8,20,21], [9,15,5], [10,4,15]]]
+[5, 2, 37, 37, [[1,'Inconnu1',36,0,0], [2,'Inconnu2',8,16,0], [3,'Inconnu3',20,32,0], [4,'Inconnu4',24,12,0], [5,'LaMa',0,0,0]], [[1,0,36], [2,24,24]]]
 \item 
 \textbf{Environnement 4} :- 
-[5, 10, 75, 75, [[1,'Inconnu1',38,14,0], [2,'Inconnu2',45,39,0], [3,'Inconnu3',31,60,0], [4,Nom,10,16,0], [5,'Inconnu5',13,35,12]], [[1,5,0], [2,52,61], [3,3,48], [4,7,27], [5,23,17], [6,28,29], [7,55,21], [8,12,0], [9,64,48]]]
+[5, 2, 73, 73, [[1,'Inconnu1',72,0,0], [2,'Inconnu2',16,32,0], [3,'Inconnu3',40,64,0], [4,'Inconnu4',48,24,0], [5,'LaMa',0,0,0]], [[1,0,72], [2,48,48]]]
 \end{itemize}
+
+
+Voici les résultats du temps d'exécution pour chacun des algorithmes effectué dans chaque environnement.
 
 \begin{figure}[!h] %on ouvre l'environnement figure
 \includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
 \caption{Progression du temps de calcul pour différents algorithmes pour différents environnements} 
 \end{figure}
 
-Avec ces résultats nous pouvons voir la performance, en temps, de chaque algorithme différent. Il ne faut pas comparer les résultats entres les environnements car ils n'ont en fait aucune lien ensemble. 
+Avec ces résultats nous pouvons voir l'évolutions des algorithmes. Nous avons doubler la distance entre le jouer et son but pour chaque environnement. Nous pouvons ainsi voir un estimé de la complexité de chacune des algorithmes.
 
-Le plremier cas à réaliser est que la technique de profondeur d'abord est vraiment risqué. Cette technique a dépasser la mémoire maximale permise à l'environnement prolog. Cette technique est donc à éviter. Il semble que l'algorithme s'étant trop dans une branch dans l'environnement 3 et 4.
-Le deuxième cas à réaliser est que l'algorithme A* est toujours pire que toutes les autres algorithme. En théorie le A* devrait être rapide car il élimine 
+En premier considération, la technique de profondeur d'abord est une algorithme vraiment risqué. Cette technique dépasse rapidement la mémoire maximale permise à l'environnement prolog. Cette technique est donc à éviter. Il semble que l'algorithme s'étant trop dans une branche dans l'environnement 2, 3 et 4.
+
+En second considération, la technique A* s'embale plus le but s'éloigne. Nous pouvons voir que le A* effectue beaucoup plus de calcul que n'importe qu'elle autre solution. L'algorithme utilise une queue avec priorité tout comme la méthode Avare ainsi que la méthode à coût uniforme. Cependant, elle tient compte de plus de paramètre que ces derniers; elle tient compte de chacun des paramètres utilisé par ces derniers. Le fait d'utilisé deux éléments dans le coût total pour l'insertion dans la queue fait que beaucoup de changement de branche est effectuer.
+
+En troisième considération, lorsque le but est très loins, seul l'algorithme greedy réussi à résoudre le problème.
+
+Avec tous ces considération, nous suggérons l'utilisation de la méthode greedy.
+
+
 
 \section{Representation STRIPS ou ADL des actions possibles de BlockBlitz}
 % Erick 

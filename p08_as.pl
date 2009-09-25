@@ -3,16 +3,16 @@
 % Version: 3.0
 % Date: 2009-09-04
 %-----------------------------------------------------------------------------
-% Le nom du fichier, le nom du module, le préfixe des prédicats et le nom
-% du mutex ont tous la même valeur. Dans ce cas ci, c'est p08. Changez TOUTES
-% les occurrences de p08 dans ce fichier pour le préfixe qui vous est assigné.
+% Le nom du fichier, le nom du module, le prï¿½fixe des prï¿½dicats et le nom
+% du mutex ont tous la mï¿½me valeur. Dans ce cas ci, c'est p08. Changez TOUTES
+% les occurrences de p08 dans ce fichier pour le prï¿½fixe qui vous est assignï¿½.
 %-----------------------------------------------------------------------------
 
-% Un JI doit être un module afin d'éviter les conflits de noms entre les JI.
+% Un JI doit ï¿½tre un module afin d'ï¿½viter les conflits de noms entre les JI.
 :- module(p08,[p08_nom/1,p08_auteurs/1,p08_reset/0,p08_plan/1,p08_action/2]).
-
+:- ensure_loaded(test_env).
 %-----------------------------------------------------------------------------
-% Prédicats de jeu.
+% Prï¿½dicats de jeu.
 %-----------------------------------------------------------------------------
 
 % Nom du JI: p08_nom(-Nom)
@@ -21,7 +21,7 @@ p08_nom(Nom) :- nom(Nom).
 % Auteurs du JI: p08_auteurs(-Auteurs)
 p08_auteurs('Erick Lavoie et Alexandre Malo').
 
-% Remise à zero du JI: p08_reset
+% Remise ï¿½ zero du JI: p08_reset
 p08_reset :-
     planInitial(P),
     setPlan(P).
@@ -36,13 +36,13 @@ p08_action(Etat, Action) :-
     trouveAction(EtatIntelligent, Action).
 
 %-----------------------------------------------------------------------------
-% Prédicats internes de plans.
+% Prï¿½dicats internes de plans.
 %-----------------------------------------------------------------------------
-% La consultation d'un plan et la modification d'un plan sont protégées par
-% mutex afin d'éviter les conflits possibles d'appels en parallèle.
+% La consultation d'un plan et la modification d'un plan sont protï¿½gï¿½es par
+% mutex afin d'ï¿½viter les conflits possibles d'appels en parallï¿½le.
 %
-% Le prédicat planRestant est déclaré dynamique, car sa valeur change au cours
-% de l'exécution.
+% Le prï¿½dicat planRestant est dï¿½clarï¿½ dynamique, car sa valeur change au cours
+% de l'exï¿½cution.
 %-----------------------------------------------------------------------------
 
 :- dynamic([planRestant/1]).
@@ -62,14 +62,14 @@ changePlan(Plan) :-
     assert(planRestant(Plan)).
 
 %-----------------------------------------------------------------------------
-% Prédicats internes d'action
+% Prï¿½dicats internes d'action
 %-----------------------------------------------------------------------------
 % Calcul de la prochaine action du JI. Ce JI ne fera jamais rien de bon...
 %-----------------------------------------------------------------------------
 
 %-----------------------------------------------------------------------------
 % Recherche de la prochaine action lorsque le planRestant n'est pas vite et
-% que la plan est toujours valide. La prochaine action du plan est retourné.
+% que la plan est toujours valide. La prochaine action du plan est retournï¿½.
 %-----------------------------------------------------------------------------
 trouveAction(Env, Action) :-
     nom(Nom),
@@ -357,23 +357,23 @@ action(none,Env,Env).
 %-----------------------------------------------------------------------------
 % Auteur: Erick Lavoie & Alexandre Malo
 % Date: 2009-09-24
-% Bloc: Fonctions spécifiques à l'implémentation de la recherche d'un plan
+% Bloc: Fonctions spï¿½cifiques ï¿½ l'implï¿½mentation de la recherche d'un plan
 %-----------------------------------------------------------------------------
 %
-%    Ce bloc contient les fonctions qui doivent être implémenter pour
-% effectuer le graph search. Il contient aussi la fonction qui déclanche
-% la recherche a partir de l'état d'un environnement.
+%    Ce bloc contient les fonctions qui doivent ï¿½tre implï¿½menter pour
+% effectuer le graph search. Il contient aussi la fonction qui dï¿½clanche
+% la recherche a partir de l'ï¿½tat d'un environnement.
 %
 %-----------------------------------------------------------------------------
 
 %-----------------------------------------------------------------------------
-% FONCTION DE DÉCLANCHEMENT DE LA RECHERCHE
+% FONCTION DE Dï¿½CLANCHEMENT DE LA RECHERCHE
 %-----------------------------------------------------------------------------
 find(StartingEnvironment, Result) :-
    graph_search([node(StartingEnvironment,nil,nil,0,0)],_,Result,[]).
 
 %-----------------------------------------------------------------------------
-% FONCTION D'EXPLOSION D'UN NOEUD POUR ÉNUMÉRER LES MOUVEMENTS POSSIBLES
+% FONCTION D'EXPLOSION D'UN NOEUD POUR ï¿½NUMï¿½RER LES MOUVEMENTS POSSIBLES
 %-----------------------------------------------------------------------------
 expand(Node,Successors) :-
    node(OriginalEnv,_,_,OriginalDepth,OriginalPathCost)=Node,
@@ -382,7 +382,7 @@ expand(Node,Successors) :-
            action(Action,OriginalEnv,OriginalPathCost,ResultEnv,PathCost),
            Successors).
 %-----------------------------------------------------------------------------
-% FONCTION DE VÉRIFICATION DE L'ATTEINTE DE NOTER BUT
+% FONCTION DE Vï¿½RIFICATION DE L'ATTEINTE DE NOTER BUT
 %
 % -Notre but est simplement de trouver un bloc peu importe sa valeur
 %-----------------------------------------------------------------------------
@@ -391,19 +391,19 @@ at_goal(node(EnvToValidate,_,_,_,_),_) :-
    query(player(_,Nom,_,_,Block),EnvToValidate),
    has_block(player(_,_,_,_,Block)).
 %-----------------------------------------------------------------------------
-% FONCTION D'AJOUT D'UN ETAT A LA LISTE DES ÉTATS FERMÉES
+% FONCTION D'AJOUT D'UN ETAT A LA LISTE DES ï¿½TATS FERMï¿½ES
 %-----------------------------------------------------------------------------
 add_to_closed(node(State,_,_,_,_),Closed,NewClosed):-
     add_in_set(State,Closed,NewClosed).
 
 %-----------------------------------------------------------------------------
-% FONCTION D'AJOUT D'UNE LISTE DE NOEUDS A VISITER DANS UNE LISTE À PRIORITÉ
+% FONCTION D'AJOUT D'UNE LISTE DE NOEUDS A VISITER DANS UNE LISTE ï¿½ PRIORITï¿½
 %-----------------------------------------------------------------------------
 add_to_fringe(Successors, Fringe, NewFringe) :-
     insert_list_pq(Successors,Fringe,NewFringe).
 
 %-----------------------------------------------------------------------------
-% FONCTION QUI ENLEVE L'ÉLÉMENT LE PLUS PRIORITAIRE DE LA LISTE À PRIORITÉ
+% FONCTION QUI ENLEVE L'ï¿½Lï¿½MENT LE PLUS PRIORITAIRE DE LA LISTE ï¿½ PRIORITï¿½
 %-----------------------------------------------------------------------------
 delete_from_fringe(Element, Fringe, NewFringe) :-
     dequeue(Element, Fringe, NewFringe).
@@ -496,7 +496,7 @@ validate(Env, [Action|T], R) :-
    validate(E2,T,R).
 
 %-----------------------------------------------------------------------------
-% Structure de donnée de set (collection),
+% Structure de donnï¿½e de set (collection),
 %   Le set est sans dupliques et les valeurs ne sont pas ordonnees
 %
 % Auteur: Charles-Antoine Brunet
@@ -590,7 +590,7 @@ print_set([]).
 print_set([H|Q]) :- write(H), nl, print_set(Q).
 
 %------------------------------------------------------------------------------
-% Structure de donnée de file (queue) et file (queue) avec priorite
+% Structure de donnï¿½e de file (queue) et file (queue) avec priorite
 % Auteur: Charles-Antoine Brunet
 %------------------------------------------------------------------------------
 % Version 1.0: Version initiale
@@ -637,7 +637,7 @@ peek_queue(E, [E|_]).
 member_queue(E, T) :- member(E, T).
 
 %------------------------------------------------------------------------------
-% Ajoute une liste d'elements à une file
+% Ajoute une liste d'elements ï¿½ une file
 % add_list_to_queue(+List, +Queue, -NewQueue)
 % List=liste a ajouter, Queue=ancienne file, NewQueue=nouvelle file
 % Utilise la fonction append de la librairie standard de liste
@@ -660,7 +660,7 @@ insert_pq(E, [H|T], [E, H|T]) :- precedes(E,H), !.
 insert_pq(E, [H|T], [H|Tnew]) :- insert_pq(E, T, Tnew).
 
 %------------------------------------------------------------------------------
-% Ajouter une liste d'elements (non ordonnes) à une file avec priorite
+% Ajouter une liste d'elements (non ordonnes) ï¿½ une file avec priorite
 % insert_list_pq(+List, +Queue, -NewQueue)
 % List=liste a ajouter, Queue=ancienne file, NewQueue=nouvelle file
 %------------------------------------------------------------------------------
@@ -671,15 +671,15 @@ insert_list_pq([E|T], L, NewL) :-
 %-----------------------------------------------------------------------------
 % Auteur: Erick Lavoie & Alexandre Malo
 % Date: 2009-09-24
-% Bloc: Fonctions de recherche par graphe générique
+% Bloc: Fonctions de recherche par graphe gï¿½nï¿½rique
 %-----------------------------------------------------------------------------
-%    Les fonctions de ce bloc implémente l'algorithme générique de la
-% recherche par graphe donnée dans le livre [Artificial Intelligence,
-% A Modern Approach, 2nd Edition] à la page 83.
+%    Les fonctions de ce bloc implï¿½mente l'algorithme gï¿½nï¿½rique de la
+% recherche par graphe donnï¿½e dans le livre [Artificial Intelligence,
+% A Modern Approach, 2nd Edition] ï¿½ la page 83.
 %
-%    Afin d'être utiliser, il faut implémenter quelques fonctions qui
-% déterminera le comportement de la recherche. Voici les fonctions à
-% implémenter.
+%    Afin d'ï¿½tre utiliser, il faut implï¿½menter quelques fonctions qui
+% dï¿½terminera le comportement de la recherche. Voici les fonctions ï¿½
+% implï¿½menter.
 %
 %     [delete_from_fringe(Node,Fringe,NewFringe)]
 %     [add_to_fringe(Nodes,Fringe,NewFringe)    ]
@@ -688,14 +688,14 @@ insert_list_pq([E|T], L, NewL) :-
 %     [is_closed(Node,Closed)                   ]
 %     [expand(Node,Successors)                  ]
 %
-%    Remarqué que aucune de c'est fonction ne force un type de structure
-% lors des appels. C'est à l'implémentation d'effectuer les restrictions.
+%    Remarquï¿½ que aucune de c'est fonction ne force un type de structure
+% lors des appels. C'est ï¿½ l'implï¿½mentation d'effectuer les restrictions.
 %
 %-----------------------------------------------------------------------------
 
 %------------------------------------------------------------------------------
-% Fonction de recherche qui prend un prochain noeud de la liste pour démarer
-% une nouvelle itération de recherche.
+% Fonction de recherche qui prend un prochain noeud de la liste pour dï¿½marer
+% une nouvelle itï¿½ration de recherche.
 %
 % graph_search(Fringe,Goal,Result,Closed).
 %------------------------------------------------------------------------------
@@ -703,23 +703,23 @@ graph_search([H|T],Goal,Solution,Closed) :-
     delete_from_fringe(Node, [H|T], NewFringe),
     graph_search_helper(Node,NewFringe,Goal,Solution,Closed).
 %------------------------------------------------------------------------------
-% Fonction de recherche qui est utilisé si le but est atteint
+% Fonction de recherche qui est utilisï¿½ si le but est atteint
 %------------------------------------------------------------------------------
 graph_search_helper(Node,_,Goal,Node,Closed):-
     at_goal(Node,Goal),
     \+is_closed(Node,Closed).
 %------------------------------------------------------------------------------
-% Fonction de recherche qui est utilisé si le but n'est pas atteint et si
-% le noeud est dans la liste des noeud fermés.
+% Fonction de recherche qui est utilisï¿½ si le but n'est pas atteint et si
+% le noeud est dans la liste des noeud fermï¿½s.
 %------------------------------------------------------------------------------
 graph_search_helper(Node,Fringe,Goal,Solution,Closed) :-
     \+at_goal(Node,Goal),
     is_closed(Node,Closed), 
     graph_search(Fringe,Goal,Solution,Closed).
 %------------------------------------------------------------------------------
-% Fonction de recherche qui est utilisé si le but n'est pas atteint et que
-% le noeud n,est pas dans la liste des noeuds fermés. Dans ce cas l'expansion
-% du noeud est effectué et la recherche est recommencé avec un nouveau fringe.
+% Fonction de recherche qui est utilisï¿½ si le but n'est pas atteint et que
+% le noeud n,est pas dans la liste des noeuds fermï¿½s. Dans ce cas l'expansion
+% du noeud est effectuï¿½ et la recherche est recommencï¿½ avec un nouveau fringe.
 %------------------------------------------------------------------------------
 graph_search_helper(Node,Fringe,Goal,Solution,Closed) :-
     \+at_goal(Node,Goal),
@@ -729,181 +729,4 @@ graph_search_helper(Node,Fringe,Goal,Solution,Closed) :-
     add_to_fringe(Successors,Fringe,NewFringe),
     graph_search(NewFringe,Goal,Solution,NewClosed).
 
-%-----------------------------------------------------------------------------
-% Auteur: Erick Lavoie & Alexandre Malo
-% Date: 2009-09-24
-% Bloc: Fonctions de test
-%-----------------------------------------------------------------------------
-%    Les fonctions suivantes sont utilisé afin de vérifier les multiples
-% fonctionnalités de toutes nos algorithmes. Voici la listes des testes
-% effectués.
-%
-%      [test_all                    ] 
-%      [test_planif                 ] 
-%      [test_move                   ]
-%      [test_take_no_block_on_player]
-%      [test_take_a_block_on_player ]
-%      [test_drop_a_block           ]
-%      [test_attack                 ]
-%      [test_attack_exchange        ]
-%      [test_priority_queue         ]
-%      [test_precedes               ]
-%      [test_env                    ]
-% 
-%-----------------------------------------------------------------------------
-
-%------------------------------------------------------------------------------
-% EFFECTUE TOUTEE LES TESTS
-%------------------------------------------------------------------------------
-test_all:-
-    test_planif,
-    test_move,
-    test_take_no_block_on_player,
-    test_take_a_block_on_player,
-    test_drop_a_block,
-    test_attack,
-    test_attack_exchange,
-    test_priority_queue,
-    test_precedes,
-    test_env.
-
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE LA PLANIFICATION
-%------------------------------------------------------------------------------
-build_test_env(4,Env) :-
-    nom(Nom), 
-    L=[5,10,15,15,[[1,'Inconnu1',7,7,0],[2,'Inconnu2',8,10,13],[3,'Inconnu3',2,0,15],[4,'Inconnu4',1,10,1],[5,Nom,10,12,0]],[[2,12,10],[3,7,0],[4,2,4],[5,12,14],[6,14,10],[7,7,4],[8,10,3]]],
-    build_env(L,Env).
-build_test_env(3,Env) :-
-    nom(Nom), 
-    L=[5,10,25,25,[[1,Nom,10,16,0],[2,'Inconnu2',7,23,0],[3,'Inconnu3',8,9,0],[4,'Inconnu4',0,5,0],[5,'Inconnu5',4,16,3]],[[1,17,13],[2,20,2],[4,5,3],[5,4,14],[6,14,10],[7,18,17],[8,20,21],[9,15,5],[10,4,15]]],
-    build_env(L,Env).
-build_test_env(2,Env) :-
-    nom(Nom), 
-    L=[5,10,50,50,[[1,'Inconnu1',13,26,0],[2,'Inconnu2',43,44,0],[3,Nom,10,16,0],[4,'Inconnu4',1,32,0],[5,'Inconnu5',16,16,16]],[[1,17,13],[2,20,2],[4,5,3],[5,4,14],[6,14,10],[7,18,17],[8,20,21],[9,15,5],[10,4,15]]],
-    build_env(L,Env).
-build_test_env(1,Env) :-
-    nom(Nom), 
-    L=[5,10,75,75,[[1,'Inconnu1',38,14,0],[2,'Inconnu2',45,39,0],[3,'Inconnu3',31,60,0],[4,Nom,10,16,0],[5,'Inconnu5',13,35,12]],[[1,5,0],[2,52,61],[3,3,48],[4,7,27],[5,23,17],[6,28,29],[7,55,21],[8,12,0],[9,64,48]]],
-    build_env(L,Env).
-
-test_planif(NoTest) :-
-    build_test_env(NoTest,Env),
-    find(Env,Plan),
-    build_path(Plan,[],R).
-
-test_all_planif :-
-   time(test_planif(4)),
-   time(test_planif(3)),
-   time(test_planif(2)),
-   time(test_planif(1)).
-
-test_planif :-
-    nom(Nom), 
-    L=[1,1,3,3,[[_,Nom,0,0,0]],[[1,2,1]]],
-    build_env(L,Env),
-    find(Env,Plan),
-    build_path(Plan,[],R),
-    write(R).
-
-%------------------------------------------------------------------------------
-% VÉRIFICATION D'UN MOUVEMENT
-%------------------------------------------------------------------------------
-test_move :-
-    nom(Nom), 
-    L=[1,1,2,2,[[_,Nom,0,0,0]],[]],
-    R=[1,1,2,2,[[_,Nom,0,1,0]],[]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    move(1,Env,EnvR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE PRENDRE UN BLOC SANS EN AVOIR
-%------------------------------------------------------------------------------
-test_take_no_block_on_player :-
-    nom(Nom), 
-    L=[1,1,2,2,[[_,Nom,0,0,0]],[[1,0,1]]],
-    R=[1,1,2,2,[[_,Nom,0,0,1]],[]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    take(1,Env,EnvR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE PRENDRE UN BLOC EN AYANT DÉJÀ UN
-%------------------------------------------------------------------------------
-test_take_a_block_on_player :-
-    nom(Nom), 
-    L=[1,2,2,2,[[_,Nom,0,0,2]],[[1,0,1]]],
-    R=[1,2,2,2,[[_,Nom,0,0,1]],[[2,0,1]]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    take(1,Env, TakeR),
-    equal_set(EnvR,TakeR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE DÉPOSER UN BLOC
-%------------------------------------------------------------------------------
-test_drop_a_block :-
-    nom(Nom), 
-    L=[1,1,2,2,[[_,Nom,0,0,1]],[]],
-    R=[1,1,2,2,[[_,Nom,0,0,0]],[[1,0,1]]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    drop(1,Env, DropR),
-    equal_set(EnvR,DropR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION D'UN ATTAQUE SUR UNE PERSONNE
-%------------------------------------------------------------------------------
-test_attack :-
-    nom(Nom), 
-    L=[2,1,2,2,[[_,Nom,0,0,0],[2,zeouf,0,1,1]],[]],
-    R=[2,1,2,2,[[_,Nom,0,0,1],[2,zeouf,0,1,0]],[]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    attack(1,Env,AttackR),
-    equal_set(EnvR,AttackR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION D'UN ATTAQUE QUI CAUSE UN ÉCHANGE
-%------------------------------------------------------------------------------
-test_attack_exchange :-
-    nom(Nom), 
-    L=[2,2,2,2,[[_,Nom,0,0,2],[2,zeouf,0,1,1]],[]],
-    R=[2,2,2,2,[[_,Nom,0,0,1],[2,zeouf,0,1,2]],[]],
-    build_env(L,Env),
-    build_env(R,EnvR),
-    attack(1,Env,AttackR),
-    equal_set(EnvR,AttackR).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE L'INSERTION D'UN NOEUD DANS LA LISTE DE PRIORITÉ POUR A*
-%------------------------------------------------------------------------------
-test_priority_queue :-
-    nom(Nom), 
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
-    insert_pq(N1,[N2],R),
-    [N1,N2] = R. 
-
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE LA COMPARAISON ENTRE DEUX NOEUDS
-%------------------------------------------------------------------------------
-test_precedes :-
-    nom(Nom),
-    N1=node([player(_, Nom, 0, 1, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(1), 1, 1),
-    N2=node([player(_, Nom, 1, 0, 0), block(1, 0, 2), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)],
-             node([block(1, 0, 2), player(_, Nom, 0, 0, 0), nbRangees(3), nbColonnes(3), nbBlocks(1), nbJoueurs(1)], nil, nil, 0, 0),
-             move(2), 1, 1),
-    precedes(N1,N2).
-%------------------------------------------------------------------------------
-% VÉRIFICATION DE L'ENVIRONEMENT
-%------------------------------------------------------------------------------
-test_env :-
-    nom(Nom),
-    R=[1,2,4,4,[[_, Nom,1,0,0]],[[1,0,3],[3,3,3]]],
-    build_env(R,Env),
-    Env = [block(1, 0, 3), block(3, 3, 3), player(_, 'LaMa', 1, 0, 0), nbRangees(4), nbColonnes(4), nbBlocks(2), nbJoueurs(1)].
-
- 
 %/* vim: set filetype=prolog : */

@@ -2,43 +2,40 @@
 
 //Voici un environnement tres grand. Notre joueur est loins de tout. Il y a donc beaucoup de calcul a realiser.
 //Voyons voir qu'elle algo est la plus rapide.
-4:
-[5,10,75,75,[[1,'Inconnu1',38,14,0],[2,'Inconnu2',45,39,0],[3,'Inconnu3',31,60,0],[4,Nom,10,16,0],[5,'Inconnu5',13,35,12]],[[1,5,0],[2,52,61],[3,3,48],[4,7,27],[5,23,17],[6,28,29],[7,55,21],[8,12,0],[9,64,48]]]
-3: 
-[5,10,50,50,[[1,'Inconnu1',13,26,0],[2,'Inconnu2',43,44,0],[3,Nom,10,16,0],[4,'Inconnu4',1,32,0],[5,'Inconnu5',16,16,16]],[[1,17,13],[2,20,2],[4,5,3],[5,4,14],[6,14,10],[7,18,17],[8,20,21],[9,15,5],[10,4,15]]]
-2: 
-[5,10,25,25,[[1,Nom,10,16,0],[2,'Inconnu2',7,23,0],[3,'Inconnu3',8,9,0],[4,'Inconnu4',0,5,0],[5,'Inconnu5',4,16,3]],[[1,17,13],[2,20,2],[4,5,3],[5,4,14],[6,14,10],[7,18,17],[8,20,21],[9,15,5],[10,4,15]]]
-1:
-[5,10,15,15,[[1,'Inconnu1',7,7,0],[2,'Inconnu2',8,10,13],[3,'Inconnu3',2,0,15],[4,'Inconnu4',1,10,1],[5,Nom,10,12,0]],[[2,12,10],[3,7,0],[4,2,4],[5,12,14],[6,14,10],[7,7,4],[8,10,3]]]
+4 :- [5,2,10,10,[[1,'Inconnu1',9,0,0],[2,'Inconnu2',2,4,0],[3,'Inconnu3',5,8,0],[4,'Inconnu4',6,3,0],[5,'LaMa',0,0,0]],[[1,0,9],[2,6,6]]]
+3 :- [5,2,19,19,[[1,'Inconnu1',18,0,0],[2,'Inconnu2',4,8,0],[3,'Inconnu3',10,16,0],[4,'Inconnu4',12,6,0],[5,'LaMa',0,0,0]],[[1,0,18],[2,12,12]]]
+2 :- [5,2,37,37,[[1,'Inconnu1',36,0,0],[2,'Inconnu2',8,16,0],[3,'Inconnu3',20,32,0],[4,'Inconnu4',24,12,0],[5,'LaMa',0,0,0]],[[1,0,36],[2,24,24]]]
+1 :- [5,2,73,73,[[1,'Inconnu1',72,0,0],[2,'Inconnu2',16,32,0],[3,'Inconnu3',40,64,0],[4,'Inconnu4',48,24,0],[5,'LaMa',0,0,0]],[[1,0,72],[2,48,48]]]
 
 
 ---------
 resultat A*:
-% 20,829 inferences, 0.01 CPU in 0.01 seconds (80% CPU, 2082900 Lips)
-% 5,600,003 inferences, 1.80 CPU in 1.80 seconds (100% CPU, 3111113 Lips)
-% 5,591,492 inferences, 1.76 CPU in 1.77 seconds (99% CPU, 3176984 Lips)
-% 148,674,486 inferences, 46.39 CPU in 46.62 seconds (100% CPU, 3204882 Lips)
+% 1,390,063 inferences, 0.45 CPU in 0.45 seconds (99% CPU, 3089029 Lips)
+% 24,115,280 inferences, 7.91 CPU in 8.09 seconds (98% CPU, 3048708 Lips)
+% 257,066,056 inferences, 83.99 CPU in 84.26 seconds (100% CPU, 3060675 Lips)
+% ERROR: Out of global stack
 
 resultat Greedy
-% 13,826 inferences, 0.01 CPU in 0.01 seconds (101% CPU, 1382600 Lips)
-% 68,643 inferences, 0.04 CPU in 0.04 seconds (91% CPU, 1716075 Lips)
-% 68,575 inferences, 0.03 CPU in 0.03 seconds (100% CPU, 2285833 Lips)
-% 162,627 inferences, 0.05 CPU in 0.06 seconds (90% CPU, 3252540 Lips):
+% 34,618 inferences, 0.02 CPU in 0.02 seconds (92% CPU, 1730900 Lips)
+% 77,449 inferences, 0.05 CPU in 0.05 seconds (93% CPU, 1548980 Lips)
+% 178,492 inferences, 0.08 CPU in 0.07 seconds (107% CPU, 2231150 Lips)
+% 441,814 inferences, 0.16 CPU in 0.17 seconds (94% CPU, 2761337 Lips)
 
 resultat Bredth-First:
-% 84,651 inferences, 0.04 CPU in 0.05 seconds (84% CPU, 2116275 Lips)
-% 2,847,512 inferences, 0.81 CPU in 0.82 seconds (99% CPU, 3515447 Lips)
-% 2,329,612 inferences, 0.63 CPU in 0.63 seconds (99% CPU, 3697797 Lips)
-% 18,858,993 inferences, 5.12 CPU in 5.12 seconds (100% CPU, 3683397 Lips)
+% 228,067 inferences, 0.13 CPU in 0.13 seconds (101% CPU, 1754362 Lips)
+% 1,880,050 inferences, 0.56 CPU in 0.57 seconds (98% CPU, 3357232 Lips)
+% 18,936,708 inferences, 5.24 CPU in 5.28 seconds (99% CPU, 3613876 Lips)
+% ERROR: Out of global stack
 
 resultat Uniform-Cost:
-% 29,696 inferences, 0.02 CPU in 0.02 seconds (119% CPU, 1484800 Lips)
-% 2,769,663 inferences, 0.81 CPU in 0.81 seconds (100% CPU, 3419337 Lips)
-% 2,774,731 inferences, 0.81 CPU in 0.81 seconds (100% CPU, 3425594 Lips)
-% 25,562,358 inferences, 7.18 CPU in 7.23 seconds (99% CPU, 3560217 Lips)
+% 191,875 inferences, 0.08 CPU in 0.08 seconds (97% CPU, 2398438 Lips)
+% 2,080,877 inferences, 0.61 CPU in 0.61 seconds (100% CPU, 3411274 Lips)
+% 22,846,039 inferences, 6.74 CPU in 6.82 seconds (99% CPU, 3389620 Lips)
+% ERROR: Out of global stack
 
 resultat Depth-First:
-% 1,238,091 inferences, 0.57 CPU in 0.59 seconds (96% CPU, 2172089 Lips)
-% 6,544,656 inferences, 5.27 CPU in 5.44 seconds (97% CPU, 1241870 Lips)
+% 181,082 inferences, 0.13 CPU in 0.12 seconds (106% CPU, 1392938 Lips)
 % ERROR: Out of global stack
 % ERROR: Out of global stack
+% ERROR: Out of global stack
+
