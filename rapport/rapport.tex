@@ -109,7 +109,7 @@ Les algorithmes de recherche non-informée font l'équivalent d'une recherche à
 
 Dans les trois cas, en tenant compte de l'utilisation d'une liste fermée, les algorithmes sont complets, au sens où ils vont tous trouver une solution s'il en existe une. À noter que la recherche en profondeur d'abord n'est pas complète sans l'utilisation d'une liste fermée puisqu'elle peut se retrouver dans une branche de profondeur infinie.
 
-Cependant, seuls la recherche en largeur et la recherche en profondeur garantissent un résultat optimal, c'est-à-dire que la solution trouvée aura le moindre coût de toutes les solutions possibles. Cela au prix d'une utilisation mémoire beaucoup plus importante que pour la recherche en profondeur d'abord.
+Cependant, seuls la recherche en largeur et la recherche à coût uniforme garantissent un résultat optimal, c'est-à-dire que la solution trouvée aura le moindre coût de toutes les solutions possibles. Cela au prix d'une utilisation mémoire beaucoup plus importante que pour la recherche en profondeur d'abord.
 
 Dans tous les cas, l'analyse en complexité permet de mettre en lumière que l'explosion combinatoire des états à explorer dans la recherche non-informée la rend impraticable dans le cas où l'espace de recherche est plus que modeste.  
 
@@ -136,11 +136,14 @@ pour l'implémentation de la planification.
 
 % Criteres
 % - Temps de calcul
-% - Utilisation memoire
 % - Qualite du plan
 % - Complexite de developement
 
 % - Couvrir les algorithmes de recherche informee et non-informee
+
+Afin de sélectionner la bonne méthode de recherche, nous avons fixé deux critères. Le premier et le temps de calcul et le second est la qualité du plan. Il va de soit qu'il faut trouvé un compromis entre le temps et le compromis. Nous allons négliger la mémoire car nous n'avons trouvé de moyen de calculer la consomation maximale de l'algorithme dans l'interpréteur prolog. Nous avons aussi négliger la compxité du développement car chaque méthode est sensiblement identique. La seul implémentation qui varie est l'ajout et le retrait d'un noeud de la liste ouvert.
+
+Pour ce qui est de la qualité du plan, 
 
 \begin{figure}[!h] %on ouvre l'environnement figure
 \includegraphics[width=4in]{resultats-planif} %ou image.png, .jpeg etc.
